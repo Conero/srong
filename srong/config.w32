@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+
+// If your extension references something external, use ARG_WITH
+// ARG_WITH("srong", "for srong support", "no");
+
+// Otherwise, use ARG_ENABLE
+// ARG_ENABLE("srong", "enable srong support", "no");
+
+if (PHP_SRONG != "no") {
+	EXTENSION("srong", "srong.c", PHP_EXTNAME_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
+}
+
