@@ -1,37 +1,56 @@
 # srong
 
-#### 项目介绍
+## 项目介绍
 php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
 
-#### 软件架构
-软件架构说明
 
 
-#### 安装教程
+## 特性
 
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 使用说明
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 参与贡献
-
-1. Fork 本项目
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+- 轻量级框架/应用
+- 项目内部采用``插拔式``架构
+- 支持*web/cli* 模式
 
 
-#### 码云特技
+![架构](/static/sRong.jpg)
 
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+## install/安装
+
+> WEB
+
+``$>php -S localhost:1994 ``
+
+
+
+> CLI
+
+``$>php static/index.php ``
+
+
+
+
+## 框架设计
+
+###  项目结构
+
+- ``<project>``
+    - static 应用程序入口
+      - *config.php* 框架默认配置
+    - srong 框架核心程序
+    - ``可选`` config 配置文件
+    - router 路由配置文件
+    - app 应用，默认为项目控制器文件，可为``cli/web`` 程序
+    - ``cli/可选``bin  应用控制器
+    - runtime 运行时目录
+
+
+
+## 常量
+
+1. *ROOT_DIR* 项目主目录
+2. *Version* 版本
+3. *Release* 发布日期
+4. *Author* 作者
+5. *Name* 框架名称
+6. *Since* 项目起始日期
+

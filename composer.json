@@ -1,0 +1,15 @@
+{
+    "name": "srong",
+    "description": "framework for php.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Joshua Conero",
+            "email": "brximl@163.com"
+        }
+    ],
+    "require": {
+        "php":"^7.0",
+        "ext-json": "*"
+    }
+}
