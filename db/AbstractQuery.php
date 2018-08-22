@@ -11,6 +11,9 @@ namespace sR\db;
 
 abstract class AbstractQuery implements Query
 {
+    /**
+     * @var \PDO
+     */
     protected $pdo;
     protected $options;
     /**
@@ -56,9 +59,26 @@ abstract class AbstractQuery implements Query
 
     }
 
+    /**
+     * @param $sql
+     * @param array $bind
+     * @return bool|\PDOStatement
+     */
+    protected function prepareThenExec($sql, $bind=array()){
+        $sth = $this->pdo->prepare($sql);
+        $sth->execute($bind);
+        return $sth;
+    }
+
+    /**
+     * @param string $sql
+     * @param array $bind
+     * @return array|null
+     */
     public function all($sql, $bind = array())
     {
-        // TODO: Implement all() method.
+        $sth = $this->prepareThenExec($sql, $bind);
+        return $sth->fetchAll(\PDO::FETCH_CLASS);
     }
 
     public function row($sql, $bind = array())
@@ -71,9 +91,40 @@ abstract class AbstractQuery implements Query
         // TODO: Implement one() method.
     }
 
+    /**
+     * 开启事务
+     * @return bool
+     */
     public function beginTransaction()
     {
-        // TODO: Implement beginTransaction() method.
+        if($this->pdo){
+            return $this->pdo->beginTransaction();
+        }
+        return false;
+    }
+
+    /**
+     * 事务提交
+     * @return bool|mixed
+     */
+    public function commit()
+    {
+        if($this->pdo){
+            return $this->pdo->commit();
+        }
+        return false;
+    }
+
+    /**
+     * 事务回滚
+     * @return bool|mixed
+     */
+    public function rollBack()
+    {
+        if($this->pdo){
+            return $this->pdo->rollBack();
+        }
+        return false;
     }
 
     /**
