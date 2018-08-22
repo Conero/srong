@@ -1,15 +1,24 @@
 {
-    "name": "srong",
+    "name": "srong/sR",
     "description": "framework for php.",
-    "type": "project",
+    "type": "library",
     "authors": [
         {
             "name": "Joshua Conero",
             "email": "brximl@163.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "sR\\": ""
+        }
+    },
     "require": {
         "php":"^7.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.3"
     }
 }
