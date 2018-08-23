@@ -7,8 +7,8 @@
  */
 
 // 框架性配置文件
-define('Version', '2.0.0');
-define('Release', '20180821');
+define('Version', '2.0.1-alpha');
+define('Release', '20180823');
 define('Author', 'Joshua Conero');
 define('Name', 'sRong');
 define('Since', '20180821');
