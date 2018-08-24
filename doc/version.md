@@ -2,7 +2,22 @@
 
 ## v2.0
 
-### v2.0.0/20180823
+### v2.0.2/20180824
+
+- 项目
+
+  - (+) *sR\Adapter* 添加方法 *getAppConfig()* 获取全局配置文件
+  - (优化) *sR\Config* 修复 *value* 多级值失败
+  - (+) *sR\Request* 
+
+    - 新增类，实现*method* 后去请求参数方法
+  - (+) *sR\Response* 
+
+      - 新增类，实现*json/xml* 数据返回
+  - (+) *sR\Router*
+      - 实现 *web* 路由规则解析；支持 *get/post*
+
+### v2.0.1-alpha/20180823
 
 - 项目
   - 引入测试框架 *PHPUnit*，以及初始化 *composer* 管理包
