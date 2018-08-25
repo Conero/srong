@@ -8,8 +8,8 @@
 use sR\Adapter;
 
 // 框架性配置文件
-define('Version', '2.0.2');
-define('Release', '20180824');
+define('Version', '2.0.3');
+define('Release', '20180825');
 define('Author', 'Joshua Conero');
 define('Name', 'sRong');
 define('Since', '20180821');

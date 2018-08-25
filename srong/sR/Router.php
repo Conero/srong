@@ -13,6 +13,7 @@ class Router
 {
     protected static $routerRuleDick = [];  // 路由规则
     protected static $queryString = ''; // 请求地址
+    protected static $queryRawString = '';
     protected static $queryParam = [];  // 请求参数
     /**
      * 路由监听器
@@ -22,6 +23,10 @@ class Router
             self::webListener();
         }else{
             println('系统载入成功！');
+        }
+        $setTrack = Adapter::getAppConfig()->value('track');
+        if($setTrack){
+            Log::info('用时: '.Adapter::getRtime().'s');
         }
     }
 
@@ -90,6 +95,7 @@ class Router
         $queryString = ($queryString? self::getStdRuleStr($queryString) : null);
 
         self::$queryString = $queryString;
+        self::$queryRawString = $queryString;
 
         // 路由匹配
         $method = Request::method();
@@ -150,5 +156,12 @@ class Router
      */
     static function unfind($callback){
         self::$routerRuleDick['unfind'] = $callback;
+    }
+
+    /**
+     * @return string
+     */
+    static function getPath(){
+        return self::$queryRawString;
     }
 }
