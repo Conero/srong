@@ -11,6 +11,7 @@ namespace sR;
 
 class Router
 {
+    const MethodCli = 'cli';
     protected static $routerRuleDick = [];  // 路由规则
     protected static $queryString = ''; // 请求地址
     protected static $queryRawString = '';
@@ -22,7 +23,7 @@ class Router
         if(!Adapter::isCli()){
             self::webListener();
         }else{
-            println('系统载入成功！');
+            self::cliListener();
         }
         $setTrack = Adapter::getAppConfig()->value('track');
         if($setTrack){
@@ -127,6 +128,16 @@ class Router
     }
 
     /**
+     * cli 程序路由
+     */
+    protected static function cliListener(){
+        $ruleDick = self::$routerRuleDick[self::MethodCli] ?? [];
+        foreach ($ruleDick as $data){
+            $name = $data['name'] ?? false;
+        }
+    }
+
+    /**
      * @param $path
      * @param $callback
      */
@@ -163,5 +174,42 @@ class Router
      */
     static function getPath(){
         return self::$queryRawString;
+    }
+
+    /**
+     * cli 模式下路由
+     * @param string $name
+     * @param mixed $callback
+     */
+    static function cli($name, $callback){
+        $cli = self::MethodCli;
+        if(!isset(self::$routerRuleDick[$cli])){
+            self::$routerRuleDick[$cli] = [];
+        }
+        self::$routerRuleDick[$cli][] = ['name'=>$name, 'callback'=>$callback];
+    }
+
+    /**
+     * @param string $method
+     * @param string $rule
+     * @param $callback
+     */
+    static function match($method, $rule, $callback){
+        $method = preg_replace('/\s/', '', $method);
+        foreach (explode('|', $method) as $mth){
+            if(empty($mth)){
+                continue;
+            }
+            if(!isset(self::$routerRuleDick[$mth])){
+                self::$routerRuleDick[$mth] = [];
+            }
+            $data = ['callback'=>$callback];
+            if($mth == self::MethodCli){
+                $data['name'] = $rule;
+            }else{
+                $data['path'] = $rule;
+            }
+            self::$routerRuleDick[$mth][] = $data;
+        }
     }
 }

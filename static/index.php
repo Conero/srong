@@ -5,6 +5,9 @@
  * Email: brximl@163.com
  * Name: 入口文件
  */
+use sR\Router;
+use sR\Adapter;
+use sR\Cli;
 
 // 框架顶级目录
 define('ROOT_DIR', str_replace('\\', '/', dirname(__DIR__)).'/');
@@ -13,4 +16,7 @@ define('ROOT_DIR', str_replace('\\', '/', dirname(__DIR__)).'/');
 require_once(ROOT_DIR. 'srong/adapter.php');
 
 // 路由器运行
-\sR\Router::listen();
+if(Adapter::isCli()){
+    Cli::init($argv);
+}
+Router::listen();

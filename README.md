@@ -45,6 +45,73 @@ php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
 
 
 
+## 模式
+
+### web
+
+> 采用URL地址重写，解析路由
+
+- 重写配置键 ``rewrite_key`` 
+- ``auto_router`` 自动路由
+  - :controller   控制器
+  - :action   方法
+
+
+
+
+
+```php
+// CONFIG.PHP
+[auto_router => true]
+
+// ROUTER
+Router::match('get|post', '/:controller/:action', function($contrl, $action){
+    $instance = new $contrl();
+    call_user_func([$instance, $action]);
+});
+
+```
+
+
+
+
+
+### cli
+
+> 通过解析第一个参数
+
+``auto_router`` 自动路由
+
+- :command   命令
+- :action   命令方法
+
+```php
+// CONFIG.PHP
+[auto_router => true]
+
+// ROUTER
+Router::match('cli', '/:command/:action', function($cmd, $action){
+    $instance = new $cmd();
+    call_user_func([$instance, $action]);
+});
+
+```
+
+> 格式
+
+``$> php static/index.php {command}  {action} :args :option``
+
+- **command**
+- *:参数*
+  - **args**
+    - ``{key=value}``
+  - **option**
+    - ``--option``
+  - **unfind**
+    - 路由失败时处理
+
+
+
 ## 常量
 
 1. *ROOT_DIR* 项目主目录
