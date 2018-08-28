@@ -21,6 +21,10 @@ class CliChain
         if(Adapter::isDebug()){
             $this->projectCheckValid();
         }
+        $routerFile = ROOT_DIR.'router/cli.php';
+        if(is_file($routerFile)){
+            require_once($routerFile);
+        }
     }
 
     /**

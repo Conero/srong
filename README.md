@@ -18,7 +18,7 @@ php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
 
 > WEB
 
-``$>php -S localhost:1994 ``
+``$>php -S 0.0.0.0:1994 ``
 
 
 
@@ -42,6 +42,73 @@ php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
     - app 应用，默认为项目控制器文件，可为``cli/web`` 程序
     - ``cli/可选``bin  应用控制器
     - runtime 运行时目录
+
+
+
+## 模式
+
+### web
+
+> 采用URL地址重写，解析路由
+
+- 重写配置键 ``rewrite_key`` 
+- ``auto_router`` 自动路由
+  - :controller   控制器
+  - :action   方法
+
+
+
+
+
+```php
+// CONFIG.PHP
+[auto_router => true]
+
+// ROUTER
+Router::match('get|post', '/:controller/:action', function($contrl, $action){
+    $instance = new $contrl();
+    call_user_func([$instance, $action]);
+});
+
+```
+
+
+
+
+
+### cli
+
+> 通过解析第一个参数
+
+``auto_router`` 自动路由
+
+- :command   命令
+- :action   命令方法
+
+```php
+// CONFIG.PHP
+[auto_router => true]
+
+// ROUTER
+Router::match('cli', '/:command/:action', function($cmd, $action){
+    $instance = new $cmd();
+    call_user_func([$instance, $action]);
+});
+
+```
+
+> 格式
+
+``$> php static/index.php {command}  {action} :args :option``
+
+- **command**
+- *:参数*
+  - **args**
+    - ``{key=value}``
+  - **option**
+    - ``--option``
+  - **unfind**
+    - 路由失败时处理
 
 
 

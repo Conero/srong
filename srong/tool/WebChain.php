@@ -21,6 +21,10 @@ class WebChain
         if(Adapter::isDebug()){
             $this->projectCheckValid();
         }
+        $routerFile = ROOT_DIR.'router/web.php';
+        if(is_file($routerFile)){
+            require_once($routerFile);
+        }
     }
 
     /**

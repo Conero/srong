@@ -119,19 +119,20 @@ class Config
                 $this->data = array_merge($this->data, $key);
                 return $this;
             }
+            // 多级 “.” 参数获取
+            else if(strpos($key, '.') !== false){
+                $key = preg_replace('/\s/', '', $key);
+                $tmpValue = $this->data;
+                foreach (explode('.', $key) as $k){
+                    if(is_array($tmpValue)){
+                        $tmpValue = ($tmpValue[$k] ?? null);
+                    }
+                }
+                return $tmpValue;
+            }
             return ($this->data[$key] ?? null);
         }
-        // 多级 “.” 参数获取
-        if(strpos($key, '.')){
-            $key = preg_replace('/\s/', '', $key);
-            $tmpValue = $this->data;
-            foreach (explode('.', $key) as $k){
-                if(is_array($tmpValue)){
-                    $tmpValue = ($tmpValue[$k] ?? null);
-                }
-            }
-            return $tmpValue;
-        }
+
         $this->data[$key] = $value;
         return $this;
     }

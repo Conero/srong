@@ -5,15 +5,17 @@
  * Email: brximl@163.com
  * Name: 项目运行文件
  */
+use sR\Adapter;
 
 // 框架性配置文件
-define('Version', '2.0.0');
-define('Release', '20180821');
+define('Version', '2.0.4');
+define('Release', '20180828');
 define('Author', 'Joshua Conero');
 define('Name', 'sRong');
 define('Since', '20180821');
+
 // 载入适配器
 require_once(__DIR__.'/sR/Adapter.php');
 
 // 加载
-\sR\Adapter::startUp();
+Adapter::startUp();

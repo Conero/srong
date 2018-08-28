@@ -51,6 +51,13 @@ class Adapter
     }
 
     /**
+     * 获取系统配置文件
+     * @return Config
+     */
+    static function getAppConfig(){
+        return self::$appConfig;
+    }
+    /**
      * 适配器启动
      */
     static function startUp(){
