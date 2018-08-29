@@ -11,10 +11,12 @@ namespace sR;
 
 class Cli
 {
-    protected static $command;
-    protected static $action;
-    protected static $args = [];
-    protected static $option = [];
+
+    protected static $command;              // 命令(类)
+    protected static $action;               // 动作
+    protected static $args = [];            // 参数[k=v]
+    protected static $option = [];          // 配置 [--option]
+    protected static $cmdQueue = [];        // 命令列，用于自由路由配置
     protected static $rawArgv = null;
     /**
      * 命令行初始化
@@ -43,8 +45,12 @@ class Cli
                 self::$option[] = substr($v, $idx+1);
             }elseif (empty(self::$command)){
                 self::$command = $v;
+                self::$cmdQueue[] = $v;
             }elseif (empty(self::$action)){
                 self::$action = $v;
+                self::$cmdQueue[] = $v;
+            }else{
+                self::$cmdQueue[] = $v;
             }
         }
     }
@@ -74,5 +80,12 @@ class Cli
      */
     static function getOption(){
         return self::$option;
+    }
+
+    /**
+     * @return array
+     */
+    static function getCmdQueue(){
+        return self::$cmdQueue;
     }
 }

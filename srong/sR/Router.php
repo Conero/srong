@@ -11,11 +11,12 @@ namespace sR;
 
 class Router
 {
-    const MethodCli = 'cli';
-    protected static $routerRuleDick = [];  // 路由规则
-    protected static $queryString = ''; // 请求地址
+    const MethodCli = 'cli';                    // cli  方法
+    const CliUnfind = ':unfind';               // 未发现路由配置
+    protected static $routerRuleDick = [];      // 路由规则
+    protected static $queryString = '';         // 请求地址
     protected static $queryRawString = '';
-    protected static $queryParam = [];  // 请求参数
+    protected static $queryParam = [];          // 请求参数
     /**
      * 路由监听器
      */
@@ -132,11 +133,66 @@ class Router
      */
     protected static function cliListener(){
         $ruleDick = self::$routerRuleDick[self::MethodCli] ?? [];
+        $unfindHld = false;
+        $metchedRouterMk = false;
         foreach ($ruleDick as $data){
             $name = $data['name'] ?? false;
+            if($name == self::CliUnfind){
+                $unfindHld = ($data['callback'] ?? false);
+                continue;
+            }
+            $name = self::getStdRuleStr($name);
+            $matched = self::matchTheCliRule($name);
+            if($matched){
+                $args = ($matched['args'] ?? false);
+                if(!empty($args) && is_array($args)){
+                    $args = array_values($args);
+                    call_user_func($data['callback'], ...$args);
+                }else{
+                    call_user_func($data['callback']);
+                }
+                $metchedRouterMk = true;
+                break;
+            }
+        }
+        // 路由失败
+        if($unfindHld && is_callable($unfindHld) && $metchedRouterMk == false){
+            $args = Cli::getCmdQueue();
+            call_user_func($unfindHld, (!empty($args)? implode('/', $args): null));
         }
     }
 
+    /**
+     * cli rule 解析
+     * @param $name
+     * @return array|null
+     */
+    protected static function matchTheCliRule($name){
+        $matched = null;
+        $args = [];
+        $ruleQue = explode('/', $name);
+        $cmdQueue = Cli::getCmdQueue();
+
+        if(!empty($cmdQueue) && count($ruleQue) == count($cmdQueue)){
+            $ruleMatched = true;
+            foreach ($ruleQue as $i => $v){
+                if(substr($v, 0, 1) == '{' && substr($v, -1) == '}'){
+                    $key = substr($v, 1, -1);
+                    $args[$key] = $cmdQueue[$i];
+                }elseif ($v !== $cmdQueue[$i]){
+                    $ruleMatched = false;
+                    break;
+                }
+            }
+            // 配置成功是放回标识
+            if($ruleMatched){
+                return [
+                    'args' => $args
+                ];
+            }
+        }
+        return $matched;
+    }
     /**
      * @param $path
      * @param $callback

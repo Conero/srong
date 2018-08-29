@@ -6,16 +6,17 @@
  * Name: 项目运行文件
  */
 use sR\Adapter;
-
-// 框架性配置文件
-define('Version', '2.0.4');
-define('Release', '20180828');
-define('Author', 'Joshua Conero');
-define('Name', 'sRong');
-define('Since', '20180821');
+use sR\sR;
 
 // 载入适配器
 require_once(__DIR__.'/sR/Adapter.php');
 
 // 加载
 Adapter::startUp();
+
+// 框架性配置文件
+define('sR_Version', sR::Version);
+define('sR_Release', sR::Release);
+define('sR_Author', sR::Author);
+define('sR_Name', sR::Name);
+define('sR_Since', sR::Since);
