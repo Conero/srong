@@ -42,6 +42,7 @@ php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
     - app 应用，默认为项目控制器文件，可为``cli/web`` 程序
     - ``cli/可选``bin  应用控制器
     - runtime 运行时目录
+    - ``开发`` tests  PHPUnit 框架
 
 
 

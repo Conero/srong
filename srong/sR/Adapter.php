@@ -55,6 +55,9 @@ class Adapter
      * @return Config
      */
     static function getAppConfig(){
+        if(!self::$appConfig){
+            self::$appConfig = new Config(ROOT_DIR.'srong/config.php');
+        }
         return self::$appConfig;
     }
     /**
@@ -63,9 +66,9 @@ class Adapter
     static function startUp(){
         self::getRtime();
         self::_loadRequire();
-        // 工具文件引入
+        // 框架公共文件
         require_once(ROOT_DIR.'srong/common.php');
-        self::$appConfig = new Config(ROOT_DIR.'srong/config.php');
+        // 工具链选择
         if(self::isCli()){
             new CliChain();
         }else{
