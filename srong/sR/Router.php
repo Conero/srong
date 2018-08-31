@@ -129,6 +129,30 @@ class Router
     }
 
     /**
+     * @return bool
+     */
+    protected static function cliAutoRouter(){
+        $findMk = false;
+        $app = Adapter::getAppConfig();
+        if($app->value('auto_router')){
+            $command = Cli::getCommand();
+            if($command){
+                $nsPref = $app->value('cli.ns_pref');
+                foreach ($nsPref as $v){
+                    $cls = $v. ucfirst($command);
+                    if(class_exists($cls)){
+                        $instance = new $cls();
+                        $action = Cli::getAction();
+                        if(method_exists($instance, $action)){
+                            call_user_func([$instance, $action]);
+                        }
+                    }
+                }
+            }
+        }
+        return $findMk;
+    }
+    /**
      * cli 程序路由
      */
     protected static function cliListener(){
@@ -155,8 +179,14 @@ class Router
                 break;
             }
         }
+
+        // 自动路由
+        if($metchedRouterMk == false){
+            $metchedRouterMk = self::cliAutoRouter();
+        }
+
         // 路由失败
-        if($unfindHld && is_callable($unfindHld) && $metchedRouterMk == false){
+        if($metchedRouterMk == false && $unfindHld && is_callable($unfindHld)){
             $args = Cli::getCmdQueue();
             call_user_func($unfindHld, (!empty($args)? implode('/', $args): null));
         }

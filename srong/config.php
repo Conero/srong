@@ -19,11 +19,22 @@ return [
     ],
     // cli 模式相关配置
     'cli'   => [
-        'sr' => true            // 开启 sr 协助命令
+        'sr'    => true,            // 开启 sr 协助命令
+        'ns_pref'   => [
+            'app\\bin\\',
+            'bin\\'
+        ]
     ],
 
     'log'   => [
         'multiple' => false             // 多文件
+    ],
+    // 自动加载
+    'autoload'=> [
+        'psr-4' => [
+            'app\\'    => 'app/',
+            'bin\\'    => 'bin/'
+        ]
     ],
     'auto_router' => true,         //自动路由，比配到模块
 ];

@@ -90,10 +90,11 @@ class Adapter
      * @return bool|mixed|null
      */
     static function isDebug(){
+        $conf = self::getAppConfig();
         if(null === self::$isDebug){
-            $debug = self::$appConfig->debug;
+            $debug = $conf->debug;
             if(!$debug){
-                $debug = (self::DevEnv == self::$appConfig->env);
+                $debug = (self::DevEnv == $conf->env);
             }
             self::$isDebug = $debug;
         }
@@ -108,6 +109,30 @@ class Adapter
             $file = ROOT_DIR.'srong/'. $cls.'.php';
             if(is_file($file)){
                 require_once($file);
+            }
+        });
+        // 系统注册级自动导入
+        $app = self::getAppConfig();
+        $autoload = $app->value('autoload');
+        $autoload = is_array($autoload) ? $autoload : [];
+        $psr4 = ($autoload['psr-4'] ?? []);
+        self::autoLoaderPsr4($psr4);
+    }
+
+    /**
+     * @param array $data
+     */
+    static function autoLoaderPsr4($data){
+        $data = is_array($data)? $data : [];
+        spl_autoload_register(function ($cls) use ($data){
+            foreach ($data as $ns => $path){
+                $cls = ($ns? str_replace($ns, '', $path): '') . $cls;
+                $file = $path . $cls. '.php';
+                echo '   -> '.$file."\r\n";
+                if(is_file($file)){
+                    require_once $file;
+                    break;
+                }
             }
         });
     }
