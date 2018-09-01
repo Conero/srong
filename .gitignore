@@ -1,4 +1,6 @@
 /vendor/
 
+# 项目运行时目录
 runtime/
+# IDE
 .idea/

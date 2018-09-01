@@ -11,7 +11,7 @@ namespace sR;
 
 class sR
 {
-    const Version = '2.0.7';
+    const Version = '2.1.0-alpha.1';
     const Release = '20180901';
     const Author = 'Joshua Conero';
     const Name = 'sRong';
