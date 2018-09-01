@@ -2,6 +2,20 @@
 
 ## v2.0
 
+### v2.0.7/20180901
+
+> 实现 **cli** 内部命令， *sr* 
+
+- 项目
+  - **sR**
+    - (+) *sR\Cli*  添加方法 *getRawArgv* 以获取 ``cli`` 模式下原始数据
+    - (+) *sR\Config* 添加方法 *hasKey* 检测配置的存在性
+    - (优化) *sR\Router*  采用 *CliSr* 类实现 ``cli`` 模式下内置命令
+  - **tool**
+    - (+) *tool\CliSr* 类用于分发 *sr* 内部命令
+    - (+) *tool\clisr\Home* 默认命令实现
+    - (优化) *tool\CliSrAbstract* 实现 ``cli`` 应用的统一管理，不在松散编制 cmd输出字符
+
 ### v2.0.6/20180831
 
 > 1. 编写 PHPunit 测试用例

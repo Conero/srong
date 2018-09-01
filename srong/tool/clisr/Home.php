@@ -9,6 +9,7 @@
 namespace tool\clisr;
 
 
+use sR\Adapter;
 use sR\sR;
 use tool\CliSrAbstract;
 
@@ -36,6 +37,9 @@ class Home extends CliSrAbstract
             self::H1. 'If ya wanna make a friend for us. C\'mon, Let do it.'.
             self::H1. 'Y\'know how to find us, don\'t ya?'.
             self::H1. 'Anyway, I\'mmmmmm not not not not ~ good.'.
+            self::Br.
+            self::Br.
+            self::H1. '用时： '.Adapter::getRtime().'s'.
             self::Br.
             self::Br.
             self::Border
