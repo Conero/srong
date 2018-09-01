@@ -2,12 +2,21 @@
 
 ## v2.0
 
-### v2.0.6/20180830-alpha1
+### v2.0.6/20180831
 
 > 1. 编写 PHPunit 测试用例
+> 2. 项目内部自动导入，采用 *psr-4* 配置实现
 
+- 项目
+    - *sR\Adapter* 
+        - (优化) 系统全局配置获取内部也不直接访问变量，而是通过方法
+        - (+) 添加 *autoLoaderPsr4* 以支持 Psr4 导入
+    - *sR\Router*
+        - (+) 初步实现 *cli* 模式下 *auto-router*
 - tests/PHPUnit
     - 添加 *sR\Router* 测试类
+- composer
+    - (修复) *composer.json*  autoload psr-4 错误
 
 
 ### v2.0.5/20180829
