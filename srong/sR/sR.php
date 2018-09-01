@@ -11,6 +11,12 @@ namespace sR;
 
 class sR
 {
+    const Version = '2.0.6';
+    const Release = '20180831';
+    const Author = 'Joshua Conero';
+    const Name = 'sRong';
+    const Since = '20180821';
+
     /**
      * @param mixed ...$debug
      */

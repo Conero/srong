@@ -10,6 +10,7 @@ namespace tool;
 
 
 use sR\Adapter;
+use sR\sR;
 
 class CliChain
 {
@@ -34,9 +35,9 @@ class CliChain
         $msg = $this->getErrorMsg();
         // 项目未未初始化话时，启动初始化器
         if(!$this->initMk){
-            print('     欢迎使用框架 sRong, By '. Author. "\r\n");
+            print('     欢迎使用框架 sRong, By '. sR::Author. "\r\n");
             print('         !! => 项目还未初始化'. "\r\n");
-            print('             ) v'.Version.'/'. Release. "\r\n");
+            print('             ) v'.sR::Version.'/'. sR::Release. "\r\n");
             print('             ) 用时 '.Adapter::getRtime(). "s, php-".phpversion()."\r\n");
 
             die();

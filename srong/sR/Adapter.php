@@ -55,6 +55,9 @@ class Adapter
      * @return Config
      */
     static function getAppConfig(){
+        if(!self::$appConfig){
+            self::$appConfig = new Config(ROOT_DIR.'srong/config.php');
+        }
         return self::$appConfig;
     }
     /**
@@ -63,9 +66,9 @@ class Adapter
     static function startUp(){
         self::getRtime();
         self::_loadRequire();
-        // 工具文件引入
+        // 框架公共文件
         require_once(ROOT_DIR.'srong/common.php');
-        self::$appConfig = new Config(ROOT_DIR.'srong/config.php');
+        // 工具链选择
         if(self::isCli()){
             new CliChain();
         }else{
@@ -87,10 +90,11 @@ class Adapter
      * @return bool|mixed|null
      */
     static function isDebug(){
+        $conf = self::getAppConfig();
         if(null === self::$isDebug){
-            $debug = self::$appConfig->debug;
+            $debug = $conf->debug;
             if(!$debug){
-                $debug = (self::DevEnv == self::$appConfig->env);
+                $debug = (self::DevEnv == $conf->env);
             }
             self::$isDebug = $debug;
         }
@@ -105,6 +109,30 @@ class Adapter
             $file = ROOT_DIR.'srong/'. $cls.'.php';
             if(is_file($file)){
                 require_once($file);
+            }
+        });
+        // 系统注册级自动导入
+        $app = self::getAppConfig();
+        $autoload = $app->value('autoload');
+        $autoload = is_array($autoload) ? $autoload : [];
+        $psr4 = ($autoload['psr-4'] ?? []);
+        self::autoLoaderPsr4($psr4);
+    }
+
+    /**
+     * @param array $data
+     */
+    static function autoLoaderPsr4($data){
+        $data = is_array($data)? $data : [];
+        spl_autoload_register(function ($cls) use ($data){
+            foreach ($data as $ns => $path){
+                $cls = ($ns? str_replace($ns, '', $path): '') . $cls;
+                $file = $path . $cls. '.php';
+                echo '   -> '.$file."\r\n";
+                if(is_file($file)){
+                    require_once $file;
+                    break;
+                }
             }
         });
     }

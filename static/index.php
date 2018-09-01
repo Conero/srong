@@ -19,4 +19,5 @@ require_once(ROOT_DIR. 'srong/adapter.php');
 if(Adapter::isCli()){
     Cli::init($argv);
 }
+// 路由监听
 Router::listen();

@@ -42,6 +42,7 @@ php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
     - app 应用，默认为项目控制器文件，可为``cli/web`` 程序
     - ``cli/可选``bin  应用控制器
     - runtime 运行时目录
+    - ``开发`` tests  PHPUnit 框架
 
 
 
@@ -115,9 +116,9 @@ Router::match('cli', '/:command/:action', function($cmd, $action){
 ## 常量
 
 1. *ROOT_DIR* 项目主目录
-2. *Version* 版本
-3. *Release* 发布日期
-4. *Author* 作者
-5. *Name* 框架名称
-6. *Since* 项目起始日期
+2. *sR_Version* 版本
+3. *sR_Release* 发布日期
+4. *sR_Author* 作者
+5. *sR_Name* 框架名称
+6. *sR_Since* 项目起始日期
 

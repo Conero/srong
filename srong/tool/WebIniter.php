@@ -10,6 +10,7 @@ namespace tool;
 
 
 use sR\Adapter;
+use sR\sR;
 
 class WebIniter
 {
@@ -29,7 +30,7 @@ class WebIniter
         $dick = ['test'];
         if($step){
             foreach ($dick as $v){
-                if($step == sha1(Version. $v)){
+                if($step == sha1(sR::Version. $v)){
                     return call_user_func([$this, 'u'. ucfirst($v)]);
                 }
             }
@@ -42,7 +43,7 @@ class WebIniter
      * 初始化首页
      */
     function uIndex(){
-        $version = Name.'-v'.Version.'/'.Release;
+        $version = sR::Name.'-v'.sR::Version.'/'.sR::Release;
         echo '
             <title>'.$version.'</title>
             <body>
@@ -51,7 +52,7 @@ class WebIniter
                     <p>欢迎使用框架:  '.$version.'</p>
                     <p>{'.Adapter::getPrjName().'}</p>
                     <p>
-                        <a href="?step='.sha1(Version.'test').'">项目测试</a>
+                        <a href="?step='.sha1(sR::Version.'test').'">项目测试</a>
                     </p>
                     <p style="font-size: 0.89em;">页面加载时间: '.Adapter::getRtime().'s</p>
                 </div>                

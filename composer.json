@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "srong\\": ""
+            "": "srong/"
         }
     },
     "require-dev": {
