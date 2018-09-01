@@ -11,5 +11,5 @@ namespace tool;
 
 trait Detector
 {
-
+    // @TODO 检测器实现
 }

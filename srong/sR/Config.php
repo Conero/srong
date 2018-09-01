@@ -138,6 +138,36 @@ class Config
     }
 
     /**
+     * 键值存在检测
+     * @param string $key
+     * @return bool
+     */
+    function hasKey($key){
+        // 多级 “.” 参数获取
+        if(strpos($key, '.') !== false){
+            $key = preg_replace('/\s/', '', $key);
+            $tmpValue = $this->data;
+            foreach (explode('.', $key) as $k){
+                if(is_array($tmpValue)){
+                    $checkValue = isset($tmpValue[$k]);
+                    if($checkValue){
+                        $tmpValue = $tmpValue[$k];
+                    }else{
+                        $tmpValue = false;
+                        break;
+                    }
+                }else{
+                    $tmpValue = false;
+                    break;
+                }
+            }
+            $hasKey = false !== $tmpValue;
+        }else{
+            $hasKey = isset($this->data[$key]);
+        }
+        return $hasKey;
+    }
+    /**
      * 获取配置文件参数
      * @return array
      */

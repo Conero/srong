@@ -11,7 +11,6 @@ namespace sR;
 
 class Cli
 {
-
     protected static $command;              // 命令(类)
     protected static $action;               // 动作
     protected static $args = [];            // 参数[k=v]
@@ -87,5 +86,12 @@ class Cli
      */
     static function getCmdQueue(){
         return self::$cmdQueue;
+    }
+
+    /**
+     * @return array|null
+     */
+    static function getRawArgv(){
+        return self::$rawArgv;
     }
 }
