@@ -9,6 +9,8 @@
 namespace sR;
 
 
+use tool\CliSr;
+
 class Router
 {
     const MethodCli = 'cli';                    // cli  方法
@@ -183,6 +185,15 @@ class Router
         // 自动路由
         if($metchedRouterMk == false){
             $metchedRouterMk = self::cliAutoRouter();
+        }
+
+        // sr 系统内存命令
+        if($metchedRouterMk == false){
+            $app = Adapter::getAppConfig();
+            if($app->value('cli.sr')){
+                $cliSr = new CliSr();
+                $metchedRouterMk = $cliSr->isMatched();
+            }
         }
 
         // 路由失败

@@ -128,7 +128,7 @@ class Adapter
             foreach ($data as $ns => $path){
                 $cls = ($ns? str_replace($ns, '', $path): '') . $cls;
                 $file = $path . $cls. '.php';
-                echo '   -> '.$file."\r\n";
+                //echo '   -> '.$file."\r\n";
                 if(is_file($file)){
                     require_once $file;
                     break;

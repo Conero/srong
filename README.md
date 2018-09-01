@@ -111,6 +111,12 @@ Router::match('cli', '/:command/:action', function($cmd, $action){
   - **unfind**
     - 路由失败时处理
 
+> **cli - sr**
+
+![](./doc/cli-sr.png)
+
+
+
 
 
 ## 常量
