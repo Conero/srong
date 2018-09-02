@@ -94,4 +94,12 @@ class Cli
     static function getRawArgv(){
         return self::$rawArgv;
     }
+
+    /**
+     * @param string $key
+     * @return mixed|null
+     */
+    static function args($key){
+        return (self::$args[$key] ?? null);
+    }
 }

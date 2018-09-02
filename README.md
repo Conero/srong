@@ -9,6 +9,7 @@ php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
 
 - 轻量级框架/应用
 - 项目内部采用``插拔式``架构
+- 支持 *phar*
 - 支持*web/cli* 模式
 
 
@@ -34,14 +35,22 @@ php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
 ###  项目结构
 
 - ``<project>``
+  - app 应用，默认为项目控制器文件，可为``cli/web`` 程序
+      - http      ``web`` 控制器
+      - bin        ``cli`` 控制器
+      - config   配置文件列表
+      - router   路由配置    ``开启自动路由非必须``
+        - web.php   *web router 配置*
+          - web.{env}.php 支持模式下不同的配置
+        - cli.php  *cli router 配置*
     - static 应用程序入口
-      - *config.php* 框架默认配置
-    - srong 框架核心程序
-    - ``可选`` config 配置文件
-    - router 路由配置文件
-    - app 应用，默认为项目控制器文件，可为``cli/web`` 程序
-    - ``cli/可选``bin  应用控制器
+      - public   前端静态文件
+        - js
+        - css
+        - asset
+    - srong 框架核心程序(*用户无须更改文件*)
     - runtime 运行时目录
+    - vendor *composer* 加载库
     - ``开发`` tests  PHPUnit 框架
 
 

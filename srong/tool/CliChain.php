@@ -22,7 +22,7 @@ class CliChain
         if(Adapter::isDebug()){
             $this->projectCheckValid();
         }
-        $routerFile = ROOT_DIR.'router/cli.php';
+        $routerFile = sR::CliRouterFile;
         if(is_file($routerFile)){
             require_once($routerFile);
         }
@@ -50,10 +50,19 @@ class CliChain
      */
     function getErrorMsg(){
         $msgQueue = [];
-        $routerDir = ROOT_DIR.'router/cli.php';
-        if(!is_file($routerDir)){
+        $routerDir = sR::CliRouterFile;
+        $conf = Adapter::getAppConfig();
+        $autoLoader = $conf->value('auto_router');
+
+        if(!is_file($routerDir) && !$autoLoader){
             $msgQueue[] = '路由器未配置(router/cli.php)';
             $this->initMk = false;
+        }
+        if($autoLoader){
+            if(!is_dir(sR::BinDir)){
+                $msgQueue[] = '项目未初始化！';
+                $this->initMk = false;
+            }
         }
         return $msgQueue;
     }

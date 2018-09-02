@@ -105,6 +105,7 @@ class Router
         $method = Request::method();
         $ruleDick = self::$routerRuleDick[$method] ?? [];
         $findPathMk = false;
+        $rdata = null;  // 返回数据
         foreach ($ruleDick as $rules){
             $rtdata = self::matchTheWebRule($rules['path']);
             if($rtdata){
@@ -112,24 +113,62 @@ class Router
                     $param = self::$queryParam;
                     $param = empty($param)? false: array_values($param);
                     if(is_array($param)){
-                        call_user_func($rules['callback'], ...$param);
+                        $rdata = call_user_func($rules['callback'], ...$param);
                     }else{
-                        call_user_func($rules['callback']);
+                        $rdata = call_user_func($rules['callback']);
                     }
                     $findPathMk = true;
                 }
                 break;
             }
         }
+
+        // 自动路由
+        if($findPathMk == false){
+            $findPathMk = self::webAutoRouter();
+            if($findPathMk && $findPathMk !== true){
+                $rdata = $findPathMk;
+                $findPathMk = true;
+            }
+        }
+
         // 路由失败处理
         if(false === $findPathMk){
             $unfindRouter = (self::$routerRuleDick['unfind'] ?? false);
             if(is_callable($unfindRouter)){
-                call_user_func($unfindRouter);
+                $rdata = call_user_func($unfindRouter);
             }
         }
+        // 路由返回 数组时识别为 json 格式
+        if(is_array($rdata)){
+            Response::json($rdata);
+        }
     }
-
+    /**
+     * @return bool
+     */
+    protected static function webAutoRouter(){
+        $findMk = false;
+        $app = Adapter::getAppConfig();
+        if($app->value('auto_router')){
+            $clsRs = $app->value('web');
+            $command = Cli::getCommand() ?? $clsRs['default_ctrl'];
+            if($command){
+                $nsPref = $app->value('web.ns_pref');
+                foreach ($nsPref as $v){
+                    $cls = $v. ucfirst($command);
+                    if(class_exists($cls)){
+                        $instance = new $cls();
+                        $action = Cli::getAction() ?? $clsRs['default_method'];;
+                        if(method_exists($instance, $action)){
+                            $findMk = call_user_func([$instance, $action]);
+                        }
+                    }
+                }
+            }
+        }
+        return $findMk;
+    }
     /**
      * @return bool
      */
@@ -137,14 +176,15 @@ class Router
         $findMk = false;
         $app = Adapter::getAppConfig();
         if($app->value('auto_router')){
-            $command = Cli::getCommand();
+            $clsRs = $app->value('cli');
+            $command = Cli::getCommand() ?? $clsRs['default_ctrl'];
             if($command){
                 $nsPref = $app->value('cli.ns_pref');
                 foreach ($nsPref as $v){
                     $cls = $v. ucfirst($command);
                     if(class_exists($cls)){
                         $instance = new $cls();
-                        $action = Cli::getAction();
+                        $action = Cli::getAction() ?? $clsRs['default_method'];;
                         if(method_exists($instance, $action)){
                             call_user_func([$instance, $action]);
                         }
