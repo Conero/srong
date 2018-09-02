@@ -29,6 +29,11 @@ class Home extends CliSrAbstract
             self::T1. 'github       ----- https://github.com/Conero/srong'.
             self::T1. 'gitee        ----- https://gitee.com/conero/srong'.
             self::Br.
+            self::H1. '命令参考(sr [command] [action])： '.
+            self::T1. 'app 项目管理'.
+            self::T2. 'init   ~~~ 项目初始化'.
+            self::T2. 'remove ~~~ 移除项目'.
+            self::Br.
             self::H1. '您当前的使用环境： '.
             self::T1. 'php  '. phpversion().
             self::T1. 'OS   '. PHP_OS.

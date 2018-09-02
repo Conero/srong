@@ -11,11 +11,25 @@ namespace sR;
 
 class sR
 {
-    const Version = '2.1.0-alpha.1';
-    const Release = '20180901';
+    // 框架版本信息
+    const Version = '2.1.0';
+    const Release = '20180902';
     const Author = 'Joshua Conero';
     const Name = 'sRong';
     const Since = '20180821';
+
+    // 框架架构信息
+    const AppDir = ROOT_DIR. '/app';
+    const HttpDir = ROOT_DIR. '/app/http';
+    const BinDir = ROOT_DIR. '/app/bin';
+    const ConfigDir = ROOT_DIR. '/app/config';
+    const RouterDir = ROOT_DIR. '/app/router';
+    const CliRouterFile = ROOT_DIR.'/app/router/cli.php';
+    const WebRouterFile = ROOT_DIR.'/app/router/web.php';
+    const ConfigFile = ROOT_DIR.'/app/config/config.php';
+
+    // 系统
+    const SysConfFile = ROOT_DIR.'/srong/config.php';
 
     /**
      * @param mixed ...$debug

@@ -39,7 +39,7 @@ php 轻量级框架以及常用库, wjtai 项目改进版(学习版)
       - http      ``web`` 控制器
       - bin        ``cli`` 控制器
       - config   配置文件列表
-      - router   路由配置
+      - router   路由配置    ``开启自动路由非必须``
         - web.php   *web router 配置*
           - web.{env}.php 支持模式下不同的配置
         - cli.php  *cli router 配置*

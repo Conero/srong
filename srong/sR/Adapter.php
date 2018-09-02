@@ -126,8 +126,8 @@ class Adapter
         $data = is_array($data)? $data : [];
         spl_autoload_register(function ($cls) use ($data){
             foreach ($data as $ns => $path){
-                $cls = ($ns? str_replace($ns, '', $path): '') . $cls;
-                $file = $path . $cls. '.php';
+                $cls = ($ns? str_replace($ns, '', $cls): $cls);
+                $file = ROOT_DIR . $path . $cls. '.php';
                 //echo '   -> '.$file."\r\n";
                 if(is_file($file)){
                     require_once $file;

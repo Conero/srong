@@ -10,6 +10,7 @@ namespace tool;
 
 
 use sR\Adapter;
+use sR\sR;
 
 class WebChain
 {
@@ -21,7 +22,7 @@ class WebChain
         if(Adapter::isDebug()){
             $this->projectCheckValid();
         }
-        $routerFile = ROOT_DIR.'router/web.php';
+        $routerFile = sR::WebRouterFile;
         if(is_file($routerFile)){
             require_once($routerFile);
         }
@@ -45,10 +46,19 @@ class WebChain
      */
     function getErrorMsg(){
         $msgQueue = [];
-        $routerDir = ROOT_DIR.'router/web.php';
-        if(!is_file($routerDir)){
+        $routerDir = sR::WebRouterFile;
+        $conf = Adapter::getAppConfig();
+        $autoLoader = $conf->value('auto_router');
+
+        if(!is_file($routerDir) && !$autoLoader){
             $msgQueue[] = '路由器未配置(router/web.php)';
             $this->initMk = false;
+        }
+        if($autoLoader){
+            if(!is_dir(sR::HttpDir)){
+                $msgQueue[] = '项目未初始化！';
+                $this->initMk = false;
+            }
         }
         return $msgQueue;
     }
