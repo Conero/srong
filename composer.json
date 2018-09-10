@@ -10,11 +10,13 @@
     ],
     "require": {
         "php":"^7.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-fileinfo": "*"
     },
     "autoload": {
         "psr-4": {
-            "": "srong/"
+            "sR\\": "srong/sR/",
+            "tool\\":"srong/tool/"
         }
     },
     "require-dev": {

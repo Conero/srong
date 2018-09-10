@@ -61,7 +61,7 @@ class CliChain
         if($autoLoader){
             if(!is_dir(sR::BinDir)){
                 $msgQueue[] = '项目未初始化！';
-                $this->initMk = false;
+                $this->initMk = true;
             }
         }
         return $msgQueue;

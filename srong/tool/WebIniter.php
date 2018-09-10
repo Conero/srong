@@ -48,7 +48,7 @@ class WebIniter
             <title>'.$version.'</title>
             <body>
                 <div style="padding-top: 10%;padding-left: 20%;font-size: 1.2em;">
-                    <img src="/static/sRong.jpg">
+                    <img src="sRong.jpg">
                     <p>欢迎使用框架:  '.$version.'</p>
                     <p>{'.Adapter::getPrjName().'}</p>
                     <p>
