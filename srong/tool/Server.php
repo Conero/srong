@@ -10,11 +10,13 @@ namespace tool;
 
 
 use sR\Adapter;
+use sR\Mime;
 
 class Server
 {
     const readableMime = '/\.(?:png|jpg|jpeg|gif)$/';
     protected $uri;
+    protected $unHandleScript = false;
     function __construct()
     {
         $this->uri = $_SERVER['REQUEST_URI'] ?? '';
@@ -28,7 +30,7 @@ class Server
         $conf = Adapter::getAppConfig();
         $rewriteKey = $conf->value('web.rewrite_key');
         if($this->_matchMimeAndRequest()){
-            die();
+            return null;
         }
         $_GET[$rewriteKey] = $this->uri;
     }
@@ -37,17 +39,23 @@ class Server
      * @return bool
      */
     private function _matchMimeAndRequest(){
-        //@todo need to make it: 2.1.1
         $matched = false;
-        if((preg_match(self::readableMime, $this->uri))){
+        if (preg_match(self::readableMime, $this->uri)){
             $file = ROOT_DIR.'/static/' . $this->uri;
-            $mine = mime_content_type($file);
-            debug($mine, $file);
-            if(is_file($file)){
-                echo file_get_contents($file);
-            }
-            $matched = true;
+            header('Content-Type: '. Mime::mime($this->uri));
+            $fh = fopen($file, 'r');
+            fpassthru($fh);
+            fclose($fh);
+            $this->unHandleScript = true;
+            return true;
         }
         return $matched;
+    }
+
+    /**
+     * @return bool
+     */
+    function isCliServerHandler(){
+        return $this->unHandleScript;
     }
 }

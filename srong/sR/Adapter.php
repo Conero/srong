@@ -68,12 +68,6 @@ class Adapter
         self::_loadRequire();
         // 框架公共文件
         require_once(ROOT_DIR.'srong/common.php');
-        // 工具链选择
-        if(self::isCli()){
-            new CliChain();
-        }else{
-            new WebChain();
-        }
     }
 
     /**

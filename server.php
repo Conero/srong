@@ -17,13 +17,17 @@ define('ROOT_DIR', str_replace('\\', '/', __DIR__.'/'));
 // 引入适配器文件
 require_once(ROOT_DIR. 'srong/adapter.php');
 
+
 // 路由器运行
 if(Adapter::isCli()){
     Cli::init($argv);
 }
 
+
 // 载入内置服务器
-new Server();
+if((new Server())->isCliServerHandler()){
+    return true;
+}
 
 // 路由监听
 Router::listen();

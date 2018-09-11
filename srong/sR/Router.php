@@ -9,7 +9,9 @@
 namespace sR;
 
 
+use tool\CliChain;
 use tool\CliSr;
+use tool\WebChain;
 
 class Router
 {
@@ -23,6 +25,13 @@ class Router
      * 路由监听器
      */
     static function listen(){
+        // 工具链选择
+        if(Adapter::isCli()){
+            new CliChain();
+        }else{
+            new WebChain();
+        }
+        // 监听开始
         if(!Adapter::isCli()){
             self::webListener();
         }else{
