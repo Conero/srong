@@ -11,9 +11,10 @@ namespace sR\db;
 
 class Mysql extends AbstractQuery
 {
-    protected function getDsn()
+    function getDsn()
     {
         $dsn = 'mysql:';
+        $this->options['host'] = ($this->options['host'] ?? 'localhost');
         $map = array_filter($this->options, function ($v){
             return in_array($v, ['host', 'dbname', 'port', 'unix_socket']);
         }, ARRAY_FILTER_USE_KEY);

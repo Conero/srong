@@ -13,7 +13,7 @@ class ConnectFactory
 {
     /**
      * @param array $options
-     * @return Query|null
+     * @return AbstractQuery|null
      */
     static function connect($options){
         $conn = null;
@@ -23,6 +23,10 @@ class ConnectFactory
             switch (strtolower($type)){
                 case 'mysql':
                     $conn = new Mysql($options);
+                    break;
+                case 'oci':
+                    $conn = new Oci($options);
+                    break;
             }
         }
         return $conn;

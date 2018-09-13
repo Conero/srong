@@ -23,13 +23,14 @@ abstract class AbstractQuery implements Query
     public function __construct($options)
     {
         $this->options = $options;
+        $this->connect();
     }
 
     /**
      * 获取 dsn 插接器
      * @return string
      */
-    protected function getDsn(){
+    function getDsn(){
         $dsn = '';
         return $dsn;
     }
@@ -65,8 +66,31 @@ abstract class AbstractQuery implements Query
      * @return bool|\PDOStatement
      */
     protected function prepareThenExec($sql, $bind=array()){
-        $sth = $this->pdo->prepare($sql);
-        $sth->execute($bind);
+        $param = null;
+        $bindOption = null;
+        if(is_array($bind) && !empty($bind)){
+            $param = [];
+            foreach ($bind as $k => $v){
+                if(is_int($k)){
+                    $param = $bind;
+                    break;
+                }else{
+                    $k = ':'. $k;
+                    $param[$k] = $v;
+                    if(empty($bindOption)){
+                        $bindOption = array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY);
+                    }
+                }
+            }
+        }
+        if($bindOption){
+            $sth = $this->pdo->prepare($sql, $bindOption);
+        }else{
+            $sth = $this->pdo->prepare($sql);
+        }
+        if($param){
+            $sth->execute($param);
+        }
         return $sth;
     }
 
@@ -128,7 +152,7 @@ abstract class AbstractQuery implements Query
     }
 
     /**
-     * @return mixed
+     * @return \PDO
      */
     public function getPdo()
     {
