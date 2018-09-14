@@ -1,5 +1,27 @@
 # version
 
+## v1.1
+
+### v1.1.0/20180914
+
+> 1. 根据 *PHPdoc* 规范编写注释，使得 *Db* 魔术方法依然支持自动完成。框架引入 *PHPdoc*
+> 2. *doc/api* 目录根据 *PHPdoc* 生成文档
+> 3. 库增加对 *pgsql* 、*sqlite* 数据支持
+
+**设计库**
+
+- (+) *Db* 添加文档，使之支持对魔术方法实现自动完成
+- *AbstractQuery*
+  - (实现) *all、row、one* 方法查询
+  - (+) 新增方法 *exec，qV，qC，builder，table，query*，增加对 *Builder* 类的嵌入调用
+- *Builder*
+  - (+) 新增类实现 *SQL生成*，支持对数据表进行 *增删改查*操作
+- (优化) *Mysql* 支持*charset* 参数
+- (优化) *Oci* 支持*port*参数
+- (+) 新增类 *Pgsql*，和 *SQLite* 增加对对应数据库的支持
+
+
+
 ## v1.0
 
 ### v1.0.1-alpha/20180913

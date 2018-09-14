@@ -11,6 +11,8 @@ namespace sR\db;
 
 abstract class AbstractQuery implements Query
 {
+    protected $quoteValue = '\'';
+    protected $quoteColumn = '';
     /**
      * @var \PDO
      */
@@ -20,6 +22,11 @@ abstract class AbstractQuery implements Query
      * @var \Exception
      */
     protected $errorException;
+    protected $driverOptions = [];
+    /**
+     * @var \PDOStatement
+     */
+    protected $sth;
     public function __construct($options)
     {
         $this->options = $options;
@@ -53,7 +60,7 @@ abstract class AbstractQuery implements Query
     protected function connect(){
         $options = $this->options;
         try{
-            $this->pdo = new \PDO($this->getDsn(), $options['user'], $options['password']);
+            $this->pdo = new \PDO($this->getDsn(), $options['user'], $options['password'], $this->driverOptions);
         }catch (\Exception $e){
             $this->errorException = $e;
         }
@@ -61,40 +68,23 @@ abstract class AbstractQuery implements Query
     }
 
     /**
-     * @param $sql
+     * @param string $sql
      * @param array $bind
+     * @param bool $affect
      * @return bool|\PDOStatement
      */
-    protected function prepareThenExec($sql, $bind=array()){
-        $param = null;
-        $bindOption = null;
-        if(is_array($bind) && !empty($bind)){
-            $param = [];
-            foreach ($bind as $k => $v){
-                if(is_int($k)){
-                    $param = $bind;
-                    break;
-                }else{
-                    $k = ':'. $k;
-                    $param[$k] = $v;
-                    if(empty($bindOption)){
-                        $bindOption = array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY);
-                    }
-                }
-            }
+    protected function prepareThenExec($sql, $bind=array(), $affect=false){
+        $sth = $this->pdo->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+        $result = $sth->execute($bind);
+        if($affect){
+            return $result;
         }
-        if($bindOption){
-            $sth = $this->pdo->prepare($sql, $bindOption);
-        }else{
-            $sth = $this->pdo->prepare($sql);
-        }
-        if($param){
-            $sth->execute($param);
-        }
+        $this->sth = $sth;
         return $sth;
     }
 
     /**
+     * 获取查询结果集所有列
      * @param string $sql
      * @param array $bind
      * @return array|null
@@ -102,17 +92,44 @@ abstract class AbstractQuery implements Query
     public function all($sql, $bind = array())
     {
         $sth = $this->prepareThenExec($sql, $bind);
-        return $sth->fetchAll(\PDO::FETCH_CLASS);
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * 获取结果集单列
+     * @param string $sql
+     * @param array $bind
+     * @return array|mixed|null
+     */
     public function row($sql, $bind = array())
     {
-        // TODO: Implement row() method.
+        $sth = $this->prepareThenExec($sql, $bind);
+        $row = $sth->fetch(\PDO::FETCH_ASSOC);
+        return $row;
     }
 
+    /**
+     * 获取结果集单值
+     * @param $sql
+     * @param array $bind
+     * @return mixed
+     */
     public function one($sql, $bind = array())
     {
-        // TODO: Implement one() method.
+        $sth = $this->prepareThenExec($sql, $bind);
+        $column = $sth->fetchColumn();
+        return $column;
+    }
+
+    /**
+     * 数据查询，返回影响的结果
+     * @param string $sql
+     * @param array $bind
+     * @return bool|int
+     */
+    function query($sql, $bind = array())
+    {
+        return $this->prepareThenExec($sql, $bind, true);
     }
 
     /**
@@ -160,10 +177,63 @@ abstract class AbstractQuery implements Query
     }
 
     /**
+     * 执行sql并返回影响的行
+     * @param $sql
+     * @return int
+     */
+    function exec($sql)
+    {
+        return $this->pdo->exec($sql);
+    }
+
+    /**
      * @return \Exception|null
      */
     function error()
     {
         return $this->errorException;
+    }
+
+    /**
+     * @param null|string $value
+     * @return string
+     */
+    function qV($value=null){
+        $quote = $this->quoteValue;
+        if($value){
+            return $quote. $value. $quote;
+        }
+        return $quote;
+    }
+
+    /**
+     * @param null|string $value
+     * @return string
+     */
+    function qC($value=null){
+        $quote = $this->quoteColumn;
+        if($value){
+            return $quote. $value. $quote;
+        }
+        return $quote;
+    }
+
+    /**
+     * SQL 生成器
+     * @return Builder
+     */
+    function builder(){
+        return new Builder($this);
+    }
+
+    /**
+     * 表查询
+     * @param string $table
+     * @param null $alias
+     * @return Builder
+     */
+    function table($table, $alias = null)
+    {
+        return (new Builder($this))->table($table, $alias);
     }
 }

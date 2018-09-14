@@ -27,6 +27,12 @@ class ConnectFactory
                 case 'oci':
                     $conn = new Oci($options);
                     break;
+                case 'pgsql':
+                    $conn = new Pgsql($options);
+                    break;
+                case 'sqlite':
+                    $conn = new SQLite($options);
+                    break;
             }
         }
         return $conn;

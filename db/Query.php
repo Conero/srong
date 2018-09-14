@@ -35,9 +35,23 @@ interface Query
     function one($sql, $bind=array());
 
     /**
+     * 数据查询，返回影响行
+     * @param string $sql
+     * @param array $bind
+     * @return int
+     */
+    function query($sql, $bind=array());
+
+    /**
      * @return \PDO
      */
     function getPdo();
+
+    /**
+     * @param $sql
+     * @return int
+     */
+    function exec($sql);
 
     /**
      * @return bool
@@ -58,4 +72,17 @@ interface Query
      * @return \Exception|null
      */
     function error();
+
+    /**
+     * @return Builder
+     */
+    function builder();
+
+    /**
+     * 数据表查询
+     * @param string $table
+     * @param null $alias
+     * @return Builder
+     */
+    function table($table, $alias=null);
 }

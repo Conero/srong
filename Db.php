@@ -13,10 +13,26 @@ use sR\db\AbstractQuery;
 use sR\db\ConnectFactory;
 use sR\db\Query;
 
+/**
+ * Class Db
+ * @method array all(string $sql, array $bind=array())
+ * @method array row(string $sql, array $bind=array())
+ * @method mixed one(string $sql, array $bind=array())
+ * @method int query($sql, $bind = array())
+ * @method boolean beginTransaction()
+ * @method boolean|mixed commit()
+ * @method boolean|mixed rollBack()
+ * @method integer exec()
+ * @method \Exception|null error()
+ * @method string qV(null|string  $value = null)
+ * @method string qC(null|string  $value = null)
+ * @method string getDsn()
+ * @package sR
+ */
 class Db
 {
-    const Version = '1.0.1-alpha';
-    const Release = '20180913';
+    const Version = '1.1.0';
+    const Release = '20180914';
     protected static $resourceDick = [];    // 资源连接字典
     /**
      * @var Query

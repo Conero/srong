@@ -11,6 +11,9 @@ namespace sR\db;
 
 class Oci extends AbstractQuery
 {
+    protected $quoteValue = '\'';
+    protected $quoteColumn = '"';
+
     /**
      * oci:dbname=//localhost:1521/mydb
      * @return string
@@ -18,7 +21,8 @@ class Oci extends AbstractQuery
     function getDsn()
     {
         $options = $this->options;
-        $dsn = 'oci:dbname='.($options['host'] ?? 'localhost').'/'.$options['dbname'];
+        $port = $options['port'] ?? false;
+        $dsn = 'oci:dbname='. ($options['host'] ?? 'localhost'). ($port? ':'.$port:''). '/'.$options['dbname'];
         $map = array_filter($this->options, function ($v){
             return in_array($v, ['charset']);
         }, ARRAY_FILTER_USE_KEY);
