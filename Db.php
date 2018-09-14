@@ -9,13 +9,14 @@
 namespace sR;
 
 
+use sR\db\AbstractQuery;
 use sR\db\ConnectFactory;
 use sR\db\Query;
 
 class Db
 {
-    const Version = '1.0.0';
-    const Release = '20180822';
+    const Version = '1.0.1-alpha';
+    const Release = '20180913';
     protected static $resourceDick = [];    // 资源连接字典
     /**
      * @var Query
@@ -25,7 +26,7 @@ class Db
     /**
      * @param string $name
      * @param array $options
-     * @return null|Query
+     * @return null|AbstractQuery
      */
     static function register($name, $options){
         $query = ConnectFactory::connect($options);
@@ -36,7 +37,7 @@ class Db
 
     /**
      * @param string $name
-     * @return mixed|null|Query
+     * @return mixed|null|AbstractQuery
      */
     static function getQuery($name=null){
         if($name){
