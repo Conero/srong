@@ -31,8 +31,8 @@ use sR\db\Query;
  */
 class Db
 {
-    const Version = '1.1.0';
-    const Release = '20180914';
+    const Version = '1.1.1';
+    const Release = '20180916';
     protected static $resourceDick = [];    // 资源连接字典
     /**
      * @var Query

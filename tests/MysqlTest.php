@@ -21,7 +21,17 @@ final class MysqlTest extends TestCase
             'host'      => 'localhost',
             'charset'   => 'utf8'
         ]);
-        print_r([$db->qC('test'), $db->qV('sys_user')]);
-        print_r([$db->all('select * from sys_user')]);
+        //print_r([$db->qC('test'), $db->qV('sys_user')]);
+        //print_r([$db->all('select * from sys_user')]);
+
+        // SQL builder
+        $sql = $db->table('sys_user', 'a')
+            ->join('fnc1000c', 'b', 'a.uid=b.uid')
+            //->field('b.*', 'a.name')
+            ->field('b.no, b.uid', 'a.name', ['ifnull(b.uid, -1)', 't1'])
+        ;
+        $sql->where(['a.uid', '>', 2]);
+        print_r([$sql->sql()]);
+        print_r([$sql->row()]);
     }
 }

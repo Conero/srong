@@ -12,6 +12,7 @@ use sR\Db;
 
 class Builder
 {
+    const setFieldExpStr = 10;      // 设置field解析是分割字符串
     protected $table;
     protected $join = [];            // [{table,alias,condition,type}]
     protected $field = [];
@@ -31,10 +32,12 @@ class Builder
      * @var AbstractQuery
      */
     protected $db;
+    protected $setting = [];
 
-    function __construct($absQuery=null)
+    function __construct($absQuery=null, $setting=array())
     {
         $this->db = $absQuery ?? Db::getQuery();
+        $this->setting = $setting;
     }
 
     /**
@@ -43,7 +46,32 @@ class Builder
      * @return $this
      */
     function field(...$fields){
-        $this->field = array_merge($this->field, $fields);
+        if(($this->setting['expStr'] ?? false) !== self::setFieldExpStr){
+            $this->field = array_merge($this->field, $fields);
+            return $this;
+        }
+        foreach ($fields as $fd){
+            if(is_array($fd)){
+                $this->field[] = $fd;
+            }
+            elseif (strpos($fd, ',') !== false){
+                foreach (explode(',', $fd) as $v){
+                    $v = trim($v);
+                    $idx = strpos($v, ' ');
+                    if($idx !== false){
+                        $nKey = trim(substr($v, 0, $idx));
+                        $nV = trim(substr($v, $idx+1));
+                        $this->field[] = [$nKey, $nV];
+                    }
+                    else{
+                        $this->field[] = $v;
+                    }
+                }
+            }
+            else{
+                $this->field[] = $fd;
+            }
+        }
         $this->parsedField = null;
         return $this;
     }
@@ -177,7 +205,7 @@ class Builder
         foreach ($data as $k=>$v){
             $field = $db->qC($k);
             $fields[] = $field;
-            $newKey = self::bindRefStr. $k;
+            $newKey = $this->_getNewBindKey($k);
             $values[] = ':'.$newKey;
             $bind[$newKey] = $v;
             $update[] = $field.'=:'. $newKey;
@@ -244,10 +272,20 @@ class Builder
      * @return array
      */
     function sql(){
-        return [
-            'sql' => $this->cSql,
-            'bind'=> $this->cBind
-        ];
+        $data = [];
+        if(empty($this->cSql)){
+            $sql = 'SELECT '. $this->getField().' FROM '.$this->getTable(). $this->getWhere();
+            $data = [
+                'sql' => $sql,
+                'bind'=> $this->bindData
+            ];
+        }else{
+            $data = [
+                'sql' => $this->cSql,
+                'bind'=> $this->cBind
+            ];
+        }
+       return $data;
     }
     /**
      * @param string|array $wh
@@ -294,11 +332,11 @@ class Builder
             $queue = [];
             // [{table,alias,condition,type}]
             foreach ($this->join as $row){
-                $table = $row['type']. ' JOIN '. $db->qC($row['table']).' '.$alias;
+                $table = $row['type']. ' JOIN '. $db->qC($row['table']).' '.$row['alias'];
                 $table .= ' ON '. $db->qC($row['condition']);
                 $queue[] = $table;
             }
-            $pTable = empty($queue)? $pTable: $pTable.implode(' ', $queue);
+            $pTable = empty($queue)? $pTable: $pTable.' '.implode(' ', $queue);
 
             $this->parsedTable = $pTable;
         }
@@ -326,16 +364,41 @@ class Builder
                     $value .= $condition;
                 }else{
                     if(is_array($condition)){
+                        // 三重条件判断
+                        $isTriple = false;
+                        if(count($condition) == 3){
+                            $isTriple = true;
+                            $i = 0;
+                            $condKeys = array_keys($condition);
+                            while ($i<3){
+                                $ck = $condKeys[$i];
+                                if(!is_int($ck) || is_array($condition[$ck])){
+                                    $isTriple = false;
+                                    break;
+                                }
+                                $i++;
+                            }
+                        }
+                        if($isTriple){
+                            list($newCol, $nRelation, $nValue) = $condition;
+                            $bindKey = $this->_getNewBindKey($newCol);
+                            $this->bindData[$bindKey] = $nValue;
+                            $newCol = $db->qC($newCol);
+                            $value .= $newCol.' '.$nRelation.' :'.$bindKey;
+                        }
                         foreach ($condition as $column=>$val){
+                            if($isTriple){
+                                break;
+                            }
                             // 绑定参数： k/v
                             if(is_string($column) && !is_array($val)){
-                                $bindKey = self::bindRefStr. $column;
+                                $bindKey = $this->_getNewBindKey($column);
                                 $this->bindData[$bindKey] = $val;
                                 $column = $db->qC($column);
                                 $value .= $column.' = :'.$bindKey;
                             }elseif (is_int($column) && is_array($val) && count($val) == 3){
                                 list($newCol, $nRelation, $nValue) = $val;
-                                $bindKey = self::bindRefStr. $newCol;
+                                $bindKey = $this->_getNewBindKey($newCol);
                                 $this->bindData[$bindKey] = $nValue;
                                 $newCol = $db->qC($newCol);
                                 $value .= $newCol.' '.$nRelation.' :'.$bindKey;
@@ -364,14 +427,31 @@ class Builder
             $queue = [];
             $db = $this->db;
             foreach ($this->field as $k=>$v){
-                if(is_int($k)){
+                if(is_int($k) && !is_array($v)){
                     $queue[] = $db->qC($v);
-                }else{
+                }
+                elseif (is_array($v)){
+                    list($key, $alias) = $v;
+                    $queue[] = $db->qC($key).' AS '.$db->qC($alias);
+                }
+                else{
                     $queue[] = $db->qC($k).' AS '.$db->qC($v);
                 }
             }
             $this->parsedField = empty($queue)? '*': implode(',', $queue);
         }
         return $this->parsedField;
+    }
+
+    /**
+     * @param $key
+     * @return string
+     */
+    private function _getNewBindKey($key){
+        if(strpos($key, '.') !== false){
+            $key = preg_replace('/[a-z0-9]+\./', '', $key);
+        }
+        $column = self::bindRefStr. $key;
+        return $column;
     }
 }

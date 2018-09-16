@@ -213,7 +213,22 @@ abstract class AbstractQuery implements Query
     function qC($value=null){
         $quote = $this->quoteColumn;
         if($value){
-            return $quote. $value. $quote;
+            $value = trim($value);
+            // 标准-字符格式
+            if(preg_match('/^[a-z0-9_]+$/i', $value)){
+                return $quote. $value. $quote;
+            }
+            // 非原始配置
+            elseif (strpos($value, '.') !== false){
+                preg_match_all('/\.[a-z0-9_]+/', $value, $matched);
+                $matched = $matched[0] ?? [];
+                foreach ($matched as $v){
+                    $newKey = str_replace('.', '.'. $quote, $v) .$quote;
+                    $value = str_replace($v, $newKey, $value);
+                }
+            }
+            //return $quote. $value. $quote;
+            return $value;
         }
         return $quote;
     }

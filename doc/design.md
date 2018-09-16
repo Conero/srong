@@ -14,6 +14,21 @@
 
 > SQL 生成器
 
+*实例化类*
+
+```php
+use sR\db\Builder;
+use sR\db\AbstractQuery;
+new Builder(
+	AbstractQuery $db,
+    $setting = [
+        'expStr'	=> Builder::setFieldExpStr				// 开启field处理时做字符串分割处理
+    ]
+)
+```
+
+
+
 
 
 #### where条件
