@@ -143,7 +143,7 @@ class Router
 
         // 路由失败处理
         if(false === $findPathMk){
-            $unfindRouter = (self::$routerRuleDick['unfind'] ?? false);
+            $unfindRouter = (self::$routerRuleDick[self::CliUnfind] ?? false);
             if(is_callable($unfindRouter)){
                 $rdata = call_user_func($unfindRouter);
             }
@@ -170,8 +170,10 @@ class Router
                         $instance = new $cls();
                         $action = Cli::getAction() ?? $clsRs['default_method'];;
                         if(method_exists($instance, $action)){
-                            $findMk = call_user_func([$instance, $action]);
+                             call_user_func([$instance, $action]);
                         }
+                        $findMk = true;
+                        break;
                     }
                 }
             }
@@ -197,6 +199,8 @@ class Router
                         if(method_exists($instance, $action)){
                             call_user_func([$instance, $action]);
                         }
+                        $findMk = true;
+                        break;
                     }
                 }
             }
@@ -208,14 +212,9 @@ class Router
      */
     protected static function cliListener(){
         $ruleDick = self::$routerRuleDick[self::MethodCli] ?? [];
-        $unfindHld = false;
-        $metchedRouterMk = false;
+        $matchedRouterMk = false;
         foreach ($ruleDick as $data){
             $name = $data['name'] ?? false;
-            if($name == self::CliUnfind){
-                $unfindHld = ($data['callback'] ?? false);
-                continue;
-            }
             $name = self::getStdRuleStr($name);
             $matched = self::matchTheCliRule($name);
             if($matched){
@@ -226,29 +225,31 @@ class Router
                 }else{
                     call_user_func($data['callback']);
                 }
-                $metchedRouterMk = true;
+                $matchedRouterMk = true;
                 break;
             }
         }
 
         // 自动路由
-        if($metchedRouterMk == false){
-            $metchedRouterMk = self::cliAutoRouter();
+        if($matchedRouterMk == false){
+            $matchedRouterMk = self::cliAutoRouter();
         }
 
         // sr 系统内存命令
-        if($metchedRouterMk == false){
+        if($matchedRouterMk == false){
             $app = Adapter::getAppConfig();
             if($app->value('cli.sr')){
                 $cliSr = new CliSr();
-                $metchedRouterMk = $cliSr->isMatched();
+                $matchedRouterMk = $cliSr->isMatched();
             }
         }
 
         // 路由失败
-        if($metchedRouterMk == false && $unfindHld && is_callable($unfindHld)){
-            $args = Cli::getCmdQueue();
-            call_user_func($unfindHld, (!empty($args)? implode('/', $args): null));
+        if($matchedRouterMk == false){
+            $unfindRouter = (self::$routerRuleDick[self::CliUnfind] ?? false);
+            if(is_callable($unfindRouter)){
+                call_user_func($unfindRouter);
+            }
         }
     }
 
@@ -312,7 +313,7 @@ class Router
      * @param callable $callback
      */
     static function unfind($callback){
-        self::$routerRuleDick['unfind'] = $callback;
+        self::$routerRuleDick[self::CliUnfind] = $callback;
     }
 
     /**
