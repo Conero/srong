@@ -24,17 +24,32 @@ abstract class CliSrAbstract
      * @var \sR\Config
      */
     protected $conf;
+    protected $args = array();
+    protected $option = array();
 
-    function __construct()
+    function __construct($data=array())
     {
         $this->conf = Adapter::getAppConfig();
+        $args = $data['args'] ?? false;
+        if($args && is_array($args)){
+            $this->args = array_merge(Cli::getArgs(), $args);
+        }
+        $option = $data['option'] ?? false;
+        if($option && is_array($option)){
+            $this->option = array_merge(Cli::getOption(), $option);
+        }
+
     }
 
     /**
      * 默认首页
      */
     function index(){
-        echo '  .'. get_class($this).self::Br;
+        echo '  .'. get_class($this)
+            .self::Br
+            .self::H1 .' need to work.'
+            .self::T1 .' to create default method in controller!'
+        ;
     }
 
     /**
@@ -51,6 +66,14 @@ abstract class CliSrAbstract
      * @return mixed|null
      */
     function argv($key){
-        return Cli::args($key);
+        return $this->args[$key] ?? null;
+    }
+
+    /**
+     * @param string $option
+     * @return bool
+     */
+    function hasOption($option){
+        return in_array($option, $this->option);
     }
 }
