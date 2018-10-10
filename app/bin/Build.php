@@ -158,6 +158,12 @@ class Build extends CliSrAbstract
             $this->runOpt['all'] += 1;
             $path = $dir .'/'. $v;
             $name = str_replace($src, '', $path);
+            $pInfo = pathinfo($name);
+            $extension = $pInfo['extension'] ?? false;
+            // phar 不能压缩自己
+            if($extension && in_array($extension, ['phar'])){
+                continue;
+            }
             if($ignore && is_array($ignore) && in_array($name, $ignore)){
                 continue;
             }
