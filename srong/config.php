@@ -35,7 +35,8 @@ return [
     ],
 
     'log'   => [
-        'multiple' => false             // 多文件
+        'multiple' => false,             // 多文件
+        'expire'    => 15,                // 有效期限(天)
     ],
     // 自动加载
     'autoload'=> [
