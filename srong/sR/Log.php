@@ -19,7 +19,7 @@ class Log
      * @param mixed $data
      * @return array|mixed
      */
-    protected static function parseData($data){
+    static function parseData($data){
         if(is_object($data) || is_array($data)){
             $data = is_object($data)? (array)$data: $data;
             $data = print_r($data, true);
@@ -29,6 +29,7 @@ class Log
 
     /**
      * 日志期限检测(删除过期的日志)
+     * @param bool $force 强制删除
      */
     static function checkExpire($force=false){
         if(empty(self::$expire)){
@@ -68,11 +69,12 @@ class Log
     static function clearLog(){
         return Fs::rmdirs(Runtime::getLogDir());
     }
+
     /**
-     * 便陷入文件
-     * @param string $name
-     * @param mixed $data
-     * @param string $pref
+     * 写入文件
+     * @param string $name 文件名称
+     * @param mixed $data 数据
+     * @param string $pref 前缀
      */
     static function writeFile($name, $data, $pref=''){
         self::checkExpire();
