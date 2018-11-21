@@ -34,6 +34,9 @@ class Home extends CliSrAbstract
             self::T2. 'init   ~~~ 项目初始化'.
             self::T2. 'remove ~~~ 移除项目'.
             self::Br.
+            self::T1. 'log 日志管理'.
+            self::T2. 'clear  ~~~ 清空系统全部日志'.
+            self::Br.
             self::H1. '您当前的使用环境： '.
             self::T1. 'php  '. phpversion().
             self::T1. 'OS   '. PHP_OS.

@@ -119,6 +119,8 @@ Router::match('cli', '/:command/:action', function($cmd, $action){
 
 ```
 
+
+
 > 格式
 
 ``$> php static/index.php {command}  {action} :args :option``
@@ -135,6 +137,18 @@ Router::match('cli', '/:command/:action', function($cmd, $action){
 > **cli - sr**
 
 ![](./doc/cli-sr.png)
+
+
+
+## `sr` 默认命令管理
+
+> 访问 sr 命令应用
+
+```powershell
+php ./static/index.php sr
+```
+
+
 
 
 
