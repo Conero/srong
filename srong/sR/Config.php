@@ -168,6 +168,18 @@ class Config
         return $hasKey;
     }
     /**
+     * 删除键值
+     * @param string $key
+     * @return bool
+     */
+    function delete($key){
+        if($this->hasKey($key)){
+            unset($this->data[$key]);
+            return true;
+        }
+        return false;
+    }
+    /**
      * 获取配置文件参数
      * @return array
      */
