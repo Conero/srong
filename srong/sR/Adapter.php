@@ -14,8 +14,8 @@ use tool\WebChain;
 
 class Adapter
 {
-    const DevEnvProd = 'prod';
-    const DevEnvDev = 'dev';
+    const EnvDev = 'dev';
+    const EnvProd = 'prod';
     protected static $startRtime = null;  // 起始时间戳
     protected static $projectName;
         /**
@@ -89,7 +89,7 @@ class Adapter
         if(null === self::$isDebug){
             $debug = $conf->debug;
             if(!$debug){
-                $debug = (self::DevEnvDev == $conf->env);
+                $debug = (self::EnvDev == $conf->env);
             }
             self::$isDebug = $debug;
         }
