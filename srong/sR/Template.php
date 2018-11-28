@@ -156,4 +156,15 @@ class Template
         $this->renderData = array_merge($this->renderData, $data);
         $this->saveAsFile($file);
     }
+
+    /**
+     * 字符串数据类
+     * @param string $tpl
+     * @param array $data
+     * @return bool|mixed
+     */
+    static function str($tpl, $data=[]){
+        $t = new self();
+        return $t->tpl2Str($tpl, $data);
+    }
 }

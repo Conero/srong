@@ -17,6 +17,13 @@ class TemplateTest extends TestCase
         $tpl = new Template();
         $tpl->name = 'Susanna Rong';
 
-        $this->assertEquals('This is '.$tpl->name, $tpl->tpl2Str('This is {name}', ['name' => $tpl->name]));
+        $this->assertEquals('This is '.$tpl->name,
+            $tpl->tpl2Str('This is ${name}', ['name' => $tpl->name]));
+    }
+
+    function teststr(){
+        $tpl = 'I\'m ${name}.';
+        $this->assertEquals('I\'m Joshua Conero.',
+            Template::str($tpl, ['name' => 'Joshua Conero']));
     }
 }
