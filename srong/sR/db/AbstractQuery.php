@@ -201,6 +201,9 @@ abstract class AbstractQuery implements Query
      */
     function qV($value=null){
         $quote = $this->quoteValue;
+        if(is_int($value) || is_float($value)){
+            return $value;
+        }
         if($value){
             return $quote. $value. $quote;
         }
