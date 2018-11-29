@@ -29,12 +29,17 @@ final class DbTest extends TestCase
         $sql = 'SELECT * FROM `user`';
         $this->assertEquals($sql, (Db::table('user')->sql())['sql']);
 
-        /*
-        $sql = 'SELECT `name` FROM `user` WHERE `uid`=2';
-        $this->assertEquals($sql, (Db::table('user')
-            ->field('name')
+        $sql = 'SELECT `name` FROM `user` WHERE `uid` = 2 AND `age` > 12 AND `name` = \'Jc\' AND `birth` LIKE \'1994-%\'';
+
+        $builder = Db::table('user')->field('name')
             ->where(['uid'=>2])
-            ->sql())['sql']);
-        */
+            ->where([
+                ['age', '>', 12],
+                'name'=>'Jc',
+                ['birth', 'like', '1994-%']
+            ]);
+        $this->assertEquals($sql,
+            $builder->subSql());
+        // print_r($builder->sql());
     }
 }

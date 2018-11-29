@@ -36,7 +36,7 @@ use sR\db\Query;
  */
 class Db
 {
-    const Version = '1.1.2';
+    const Version = '1.1.3';
     const Release = '20181129';
 
     // 数据库类型列表
