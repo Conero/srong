@@ -29,6 +29,7 @@ final class DbTest extends TestCase
         $sql = 'SELECT * FROM `user`';
         $this->assertEquals($sql, (Db::table('user')->sql())['sql']);
 
+        // =/like 等运算符号采取割空格的格式
         $sql = 'SELECT `name` FROM `user` WHERE `uid` = 2 AND `age` > 12 AND `name` = \'Jc\' AND `birth` LIKE \'1994-%\'';
 
         $builder = Db::table('user')->field('name')
