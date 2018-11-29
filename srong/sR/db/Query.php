@@ -85,4 +85,10 @@ interface Query
      * @return Builder
      */
     function table($table, $alias=null);
+
+    /**
+     * 数据库类型
+     * @return string
+     */
+    function type();
 }

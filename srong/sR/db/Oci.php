@@ -9,11 +9,14 @@
 namespace sR\db;
 
 
+use sR\Db;
+
 class Oci extends AbstractQuery
 {
     protected $quoteValue = '\'';
     protected $quoteColumn = '"';
 
+    protected $dbType = Db::DbTypeOracle;          // 数据库类型
     /**
      * oci:dbname=//localhost:1521/mydb
      * @return string

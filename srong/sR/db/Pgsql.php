@@ -9,10 +9,13 @@
 namespace sR\db;
 
 
+use sR\Db;
+
 class Pgsql extends AbstractQuery
 {
     protected $quoteValue = '\'';
     protected $quoteColumn = '';
+    protected $dbType = Db::DbTypePostgreSql;          // 数据库类型
 
     /**
      * pgsql:host=localhost;port=5432;dbname=testdb;user=bruce;password=mypass

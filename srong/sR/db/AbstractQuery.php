@@ -27,6 +27,7 @@ abstract class AbstractQuery implements Query
      * @var \PDOStatement
      */
     protected $sth;
+    protected $dbType;
     public function __construct($options)
     {
         $this->options = $options;
@@ -213,7 +214,22 @@ abstract class AbstractQuery implements Query
     function qC($value=null){
         $quote = $this->quoteColumn;
         if($value){
-            return $quote. $value. $quote;
+            $value = trim($value);
+            // 标准-字符格式
+            if(preg_match('/^[a-z0-9_]+$/i', $value)){
+                return $quote. $value. $quote;
+            }
+            // 非原始配置
+            elseif (strpos($value, '.') !== false){
+                preg_match_all('/\.[a-z0-9_]+/', $value, $matched);
+                $matched = $matched[0] ?? [];
+                foreach ($matched as $v){
+                    $newKey = str_replace('.', '.'. $quote, $v) .$quote;
+                    $value = str_replace($v, $newKey, $value);
+                }
+            }
+            //return $quote. $value. $quote;
+            return $value;
         }
         return $quote;
     }
@@ -235,5 +251,14 @@ abstract class AbstractQuery implements Query
     function table($table, $alias = null)
     {
         return (new Builder($this))->table($table, $alias);
+    }
+
+    /**
+     * 获取数据库类型
+     * @return string
+     */
+    public function type()
+    {
+        return $this->dbType;
     }
 }
