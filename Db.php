@@ -10,36 +10,55 @@ namespace sR;
 
 
 use sR\db\AbstractQuery;
+use sR\db\Builder;
 use sR\db\ConnectFactory;
 use sR\db\Query;
 
 /**
  * Class Db
- * @method array all(string $sql, array $bind=array())
- * @method array row(string $sql, array $bind=array())
- * @method mixed one(string $sql, array $bind=array())
- * @method int query($sql, $bind = array())
- * @method boolean beginTransaction()
- * @method boolean|mixed commit()
- * @method boolean|mixed rollBack()
- * @method integer exec()
- * @method \Exception|null error()
- * @method string qV(null|string  $value = null)
- * @method string qC(null|string  $value = null)
- * @method string getDsn()
+ * @method static array all(string $sql, array $bind=array())
+ * @method static array row(string $sql, array $bind=array())
+ * @method static mixed one(string $sql, array $bind=array())
+ * @method static int query($sql, $bind = array())
+ * @method static \PDO getPdo()
+ * @method static integer exec()
+ * @method static boolean beginTransaction()
+ * @method static boolean|mixed commit()
+ * @method static boolean|mixed rollBack()
+ * @method static \Exception|null error()
+ * @method static Builder builder()
+ * @method static Builder table($table, $alias=null)
+ * @method static string type()
+ * @method static string qV(null|string  $value = null)
+ * @method static string qC(null|string  $value = null)
+ * @method static string getDsn()
  * @package sR
  */
 class Db
 {
-    const Version = '1.1.1';
-    const Release = '20180916';
+    const Version = '1.1.2';
+    const Release = '20181129';
+
+    // 数据库类型列表
+    const DbTypeMysql = 'mysql';
+    const DbTypeOracle = 'oci';
+    const DbTypePostgreSql = 'pgsql';
+    const DbTypeSQLite = 'sqlite';
+
     protected static $resourceDick = [];    // 资源连接字典
     /**
+     * 当前 Db 对象
      * @var Query
      */
     protected static $currentDbRs;
+    /**
+     * 当前项目注册id
+     * @var string
+     */
+    protected static $currentDbRsKey;
 
     /**
+     * 数据库注册
      * @param string $name
      * @param array $options
      * @return null|AbstractQuery
@@ -48,6 +67,7 @@ class Db
         $query = ConnectFactory::connect($options);
         self::$currentDbRs = $query;
         self::$resourceDick[$name] = $query;
+        self::$currentDbRsKey = $name;
         return $query;
     }
 
@@ -64,14 +84,15 @@ class Db
 
     /**
      * 访问指定数据库对象
-     * @param string $name
+     * @param $name
      * @param $arguments
+     * @return mixed
      */
     static function __callStatic($name, $arguments)
     {
         if(self::$currentDbRs){
             if(method_exists(self::$currentDbRs, $name)){
-                call_user_func([self::$currentDbRs, $name], ...$arguments);
+                return call_user_func([self::$currentDbRs, $name], ...$arguments);
             }
         }
     }
@@ -87,5 +108,13 @@ class Db
             return true;
         }
         return false;
+    }
+
+    /**
+     * 后去数据库注册ID码
+     * @return string
+     */
+    static function getKey(){
+        return self::$currentDbRsKey;
     }
 }

@@ -9,6 +9,8 @@
 namespace sR\db;
 
 
+use sR\Db;
+
 class ConnectFactory
 {
     /**
@@ -21,16 +23,16 @@ class ConnectFactory
         if($type){
             $options['type'] = $type;
             switch (strtolower($type)){
-                case 'mysql':
+                case Db::DbTypeMysql:
                     $conn = new Mysql($options);
                     break;
-                case 'oci':
+                case Db::DbTypeOracle:
                     $conn = new Oci($options);
                     break;
-                case 'pgsql':
+                case Db::DbTypePostgreSql:
                     $conn = new Pgsql($options);
                     break;
-                case 'sqlite':
+                case Db::DbTypeSQLite:
                     $conn = new SQLite($options);
                     break;
             }

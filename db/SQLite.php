@@ -9,10 +9,14 @@
 namespace sR\db;
 
 
+use sR\Db;
+
 class SQLite extends AbstractQuery
 {
     protected $quoteValue = '\'';
     protected $quoteColumn = '';
+
+    protected $dbType = Db::DbTypeSQLite;          // 数据库类型
 
     /**
      * @return string

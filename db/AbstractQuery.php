@@ -27,6 +27,7 @@ abstract class AbstractQuery implements Query
      * @var \PDOStatement
      */
     protected $sth;
+    protected $dbType;
     public function __construct($options)
     {
         $this->options = $options;
@@ -250,5 +251,14 @@ abstract class AbstractQuery implements Query
     function table($table, $alias = null)
     {
         return (new Builder($this))->table($table, $alias);
+    }
+
+    /**
+     * 获取数据库类型
+     * @return string
+     */
+    public function type()
+    {
+        return $this->dbType;
     }
 }
