@@ -272,7 +272,6 @@ class Builder
      * @return array
      */
     function sql(){
-        $data = [];
         if(empty($this->cSql)){
             $sql = 'SELECT '. $this->getField().' FROM '.$this->getTable(). $this->getWhere();
             $data = [
@@ -286,6 +285,14 @@ class Builder
             ];
         }
        return $data;
+    }
+    /**
+     * 子查询
+     * @return string
+     */
+    function subSql(){
+        $sql = 'SELECT '. $this->getField().' FROM '.$this->getTable(). $this->getNoBindWhr();;
+        return $sql;
     }
     /**
      * @param string|array $wh
@@ -344,6 +351,7 @@ class Builder
     }
 
     /**
+     * 获取where 条件，绑定以后的
      * @return string
      */
     function getWhere(){
@@ -355,9 +363,6 @@ class Builder
                 $value = '';
                 // 关系判断
                 $relation = $row['relation'];
-                if(count($queue) > 1){
-                    $value .= ''. $relation.' ';
-                }
                 $isRaw = $row['isRaw'];
                 $condition = $row['condition'];
                 if($isRaw){     // 不解析条件
@@ -395,18 +400,21 @@ class Builder
                                 $bindKey = $this->_getNewBindKey($column);
                                 $this->bindData[$bindKey] = $val;
                                 $column = $db->qC($column);
-                                $value .= $column.' = :'.$bindKey;
+                                $value .= ($value? ' '. $relation.' ':'').$column.' = :'.$bindKey;
                             }elseif (is_int($column) && is_array($val) && count($val) == 3){
                                 list($newCol, $nRelation, $nValue) = $val;
                                 $bindKey = $this->_getNewBindKey($newCol);
                                 $this->bindData[$bindKey] = $nValue;
                                 $newCol = $db->qC($newCol);
-                                $value .= $newCol.' '.$nRelation.' :'.$bindKey;
+                                $value .= ($value? ' '. $relation.' ':'').$newCol.' '.$nRelation.' :'.$bindKey;
                             }
                         }
                     }else{
                         $value .= $condition;
                     }
+                }
+                if(count($queue) > 0){
+                    $value = $relation.' '. $value;
                 }
                 $queue[] = $value;
             }
@@ -420,6 +428,91 @@ class Builder
     }
 
     /**
+     * 获取非绑定的 where 条件，生成紧凑型 SQL 语句
+     * @return string
+     */
+    function getNoBindWhr(){
+        $wh = '';
+        if(empty($this->parsedWhere)){
+            $queue = [];
+            $db = $this->db;
+            //[{condition, relation, isRaw}]
+            foreach ($this->where as $row){
+                $value = '';
+                // 关系判断
+                $relation = $row['relation'];
+                $isRaw = $row['isRaw'];
+                $condition = $row['condition'];
+                if($isRaw){     // 不解析条件
+                    $value .= $condition;
+                }else{
+                    if(is_array($condition)){
+                        // 三重条件判断
+                        $isTriple = false;
+                        if(count($condition) == 3){
+                            $isTriple = true;
+                            $i = 0;
+                            $condKeys = array_keys($condition);
+                            while ($i<3){
+                                $ck = $condKeys[$i];
+                                if(!is_int($ck) || is_array($condition[$ck])){
+                                    $isTriple = false;
+                                    break;
+                                }
+                                $i++;
+                            }
+                        }
+                        if($isTriple){
+                            list($newCol, $nRelation, $nValue) = $condition;
+                            $newCol = $db->qC($newCol);
+                            $value .= $newCol.' '.$this->_getRelation($nRelation).' '.$db->qV($nValue);
+                        }
+                        // 条件循环
+                        foreach ($condition as $column=>$val){
+                            if($isTriple){
+                                break;
+                            }
+                            // 绑定参数： k/v
+                            if(is_string($column) && !is_array($val)){
+                                $column = $db->qC($column);
+                                $value .= ($value? ' '. $relation.' ':'').$column.' = '.$db->qV($val);
+                            }elseif (is_int($column) && is_array($val) && count($val) == 3){
+                                list($newCol, $nRelation, $nValue) = $val;
+                                $newCol = $db->qC($newCol);
+                                $value .= ($value? ' '. $relation.' ':'').$newCol.' '.$this->_getRelation($nRelation).' '.$db->qV($nValue);
+                            }
+                        }
+                    }else{
+                        $value .= $condition;
+                    }
+                }
+                if(count($queue) > 0){
+                    $value = $relation.' '. $value;
+                }
+                $queue[] = $value;
+            }
+            $wh = implode(' ', $queue);
+            // 条件生成
+            if($wh){
+                $wh = ' WHERE '.$wh;
+            }
+        }
+        return $wh;
+    }
+
+    /**
+     * 特殊字符串
+     * @param string $relation
+     * @return string
+     */
+    protected function _getRelation($relation){
+        if('like' == $relation){
+            $relation = 'LIKE';
+        }
+        return $relation;
+    }
+    /**
+     * 获取字段值
      * @return string
      */
     function getField(){
@@ -444,6 +537,8 @@ class Builder
     }
 
     /**
+     *
+     * 生成新的绑定值
      * @param $key
      * @return string
      */
