@@ -9,10 +9,13 @@
 namespace sR\db;
 
 
+use sR\Db;
+
 class Mysql extends AbstractQuery
 {
     protected $quoteValue = '\'';
     protected $quoteColumn = '`';
+    protected $dbType = Db::DbTypeMysql;          // 数据库类型
     function getDsn()
     {
         $dsn = 'mysql:';
