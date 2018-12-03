@@ -36,8 +36,8 @@ use sR\db\Query;
  */
 class Db
 {
-    const Version = '1.1.3';
-    const Release = '20181129';
+    const Version = '2.0.0-alpha';
+    const Release = '20181203';
 
     // 数据库类型列表
     const DbTypeMysql = 'mysql';
