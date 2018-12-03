@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 class ConfigTest extends TestCase
 {
 
+    // 键值是否存在
     public function testHasKey()
     {
         $conf = new Config();

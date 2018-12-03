@@ -5,13 +5,19 @@
 ### 2.2.0/alpha
 
 - **sR**
+
   - ds: _添加 数据结构(`data structure`)包_
     - **Dick** 
       - (+) _新字典数据结构类，实现对字典的的获取、设置、删除等基本的操作_    [181128]
-  - *Template*
+      - (修复) *`data` 获取值时判断错误*  [181203]
+
+    *Template*
+
     - (+) *添加简单方法`static str` 用于快速实现 string 模板解析*   [181128]
 - tests
-  - (+) *添加单元测试类“sRdsDickTest”，测试`sR\ds\Dick`类的 create 静态方法*    [181128]
+  - sRdsDickTest
+    - (+) *添加单元测试类“sRdsDickTest”，测试`sR\ds\Dick`类的 create 静态方法*    [181128]
+    - (+) *添加对 `has/get/data` 等方法的测试*  [181203]
   - (修复) *修复类 `sRTemplate` 测试方法*
 
 

@@ -28,4 +28,38 @@ class sRdsDickTest extends TestCase
         // 测试 data
         $dick->data();
     }
+
+    // 测试数据获取
+    function testget(){
+        $dick = new Dick([
+            'success' => true
+        ]);
+        $this->assertEquals(true, $dick->success);
+
+        $dick->joshua = 'Conero';
+        $this->assertEquals('Conero', $dick->joshua);
+
+        // 获取空值
+        $this->assertEquals(null, $dick->conero);
+    }
+    // 键值存在测试
+    function testhas(){
+        $dick = new Dick();
+        $this->assertEquals(false, $dick->has('conero'));
+        $dick->conero = 'Joshua';
+        $this->assertEquals(true, $dick->has('conero'));
+    }
+    function testdata(){
+        $dick = new Dick();
+        // 获取值
+        $this->assertEquals(null, $dick->data('joshua'));
+
+        // 设置值
+        $dick->data('joshua', 'conero');
+        $this->assertEquals('conero', $dick->data('joshua'));
+
+        $dick->data('rong', 'susanna');
+        $dick->data('joshua', 'JC');
+        $this->assertEquals(['joshua' => 'JC', 'rong' => 'susanna'], $dick->data());
+    }
 }

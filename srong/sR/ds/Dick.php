@@ -86,7 +86,7 @@ class Dick
      * @return bool|mixed|Dick
      */
     function data($key=self::None, $value=self::None){
-        if(self::None === self::None){
+        if($key !== self::None && $value === self::None){
             return $this->get($key);
         }elseif (self::None === $key){
             return $this->data;

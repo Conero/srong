@@ -12,8 +12,8 @@ namespace sR;
 class sR
 {
     // 框架版本信息
-    const Version = '2.1.12';
-    const Release = '20181121';
+    const Version = '2.2.0-alpha';
+    const Release = '20181203';
     const Author = 'Joshua Conero';
     const Name = 'sRong';
     const Since = '20180821';
