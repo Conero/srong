@@ -72,6 +72,34 @@ class Db
     }
 
     /**
+     * 通过文件注册数据库查询实例
+     * @param string $name
+     * @param string $file
+     * @param string $type
+     * @return AbstractQuery|null
+     */
+    static function registerByFile($name, $file, $type){
+        $query = null;
+        switch ($type){
+            case 'ini':
+                $query = ConnectFactory::configUseIni($file, $name);
+                break;
+            case 'json':
+                $query = ConnectFactory::configUseJson($file, $name);
+                break;
+            case 'php':
+                $query = ConnectFactory::configUsePhp($file, $name);
+                break;
+        }
+        if(!empty($query)){
+            self::$currentDbRs = $query;
+            self::$resourceDick[$name] = $query;
+            self::$currentDbRsKey = $name;
+        }
+        return $query;
+    }
+
+    /**
      * @param string $name
      * @return mixed|null|AbstractQuery
      */
@@ -95,6 +123,7 @@ class Db
                 return call_user_func([self::$currentDbRs, $name], ...$arguments);
             }
         }
+        return null;
     }
 
     /**
