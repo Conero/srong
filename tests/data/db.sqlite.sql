@@ -14,6 +14,7 @@ create table country (
 
 -- 省/州
 DROP TABLE IF EXISTS province;
+
 create table province (
   name varchar(100),        -- 英文
   cname varchar(50),        -- 中文名称
@@ -24,6 +25,7 @@ create table province (
   ct_area    int,              -- 区
   ct_village int,              -- 村
   ct_cho     int,              -- 町
-  country varchar(100)         -- 国家
+  country varchar(10),         -- 国家
+  mtime datetime default (datetime( 'now', 'localtime'))
 );
 

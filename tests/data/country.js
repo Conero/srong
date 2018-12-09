@@ -2275,7 +2275,14 @@ function createSqlite() {
     return sql;
 }
 
-console.log('生成 country 表数据插入语句');
-//fs.writeFileSync('./sqlite.country.sql', createSqlite());
-fs.writeFileSync('./tests/sqlite.country.sql', createSqlite());
-//console.log(createSqlite());
+
+
+
+// ------------
+function sqlite(){
+    console.log('生成 country 表数据插入语句');
+    //fs.writeFileSync('./sqlite.country.sql', createSqlite());
+    fs.writeFileSync('./tests/data/sqlite.country.sql', createSqlite());
+    //console.log(createSqlite());
+}
+sqlite();
