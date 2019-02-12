@@ -9,6 +9,7 @@
 namespace sR\db;
 
 
+use mysql_xdevapi\Exception;
 use sR\Db;
 
 class ConnectFactory
@@ -43,9 +44,10 @@ class ConnectFactory
 
     /**
      * 通过加载ini文件实例化内容
-     * @param string $ini
+     * @param string $file
      * @param string $name
-     * @return bool|AbstractQuery
+     * @return AbstractQuery|null
+     * @throws \Exception
      */
     static function configUseIni($file, $name=''){
         if(is_file($file)){
@@ -54,15 +56,17 @@ class ConnectFactory
                 $option = $option[$name] ?? [];
             }
             return self::connect($option);
+        }else{
+            throw new \Exception('配置文件不存在!');
         }
-        return null;
     }
 
     /**
      * 通过加载json文件实例化对象
      * @param string $file
      * @param string $name
-     * @return bool|AbstractQuery
+     * @return AbstractQuery|null
+     * @throws \Exception
      */
     static function configUseJson($file, $name=''){
         if(is_file($file)){
@@ -71,8 +75,9 @@ class ConnectFactory
                 $option = $option[$name] ?? [];
             }
             return self::connect($option);
+        }else{
+            throw new \Exception('配置文件不存在!');
         }
-        return null;
     }
     /**
      * @param $file
@@ -89,6 +94,7 @@ class ConnectFactory
      * @param string $file
      * @param string $name
      * @return AbstractQuery|null
+     * @throws \Exception
      */
     static function configUsePhp($file, $name=''){
         if(is_file($file)){
@@ -97,7 +103,8 @@ class ConnectFactory
                 $option = $option[$name] ?? [];
             }
             return self::connect($option);
+        }else{
+            throw new \Exception('配置文件不存在!');
         }
-        return null;
     }
 }

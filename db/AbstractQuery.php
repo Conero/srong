@@ -9,6 +9,8 @@
 namespace sR\db;
 
 
+use mysql_xdevapi\Exception;
+
 abstract class AbstractQuery implements Query
 {
     protected $quoteValue = '\'';
@@ -60,12 +62,7 @@ abstract class AbstractQuery implements Query
      */
     protected function connect(){
         $options = $this->options;
-        try{
-            $this->pdo = new \PDO($this->getDsn(), $options['user'], $options['password'], $this->driverOptions);
-        }catch (\Exception $e){
-            $this->errorException = $e;
-        }
-
+        $this->pdo = new \PDO($this->getDsn(), $options['user'], $options['password'], $this->driverOptions);
     }
 
     /**

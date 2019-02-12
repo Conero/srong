@@ -9,6 +9,7 @@
 namespace sR;
 
 
+use mysql_xdevapi\Exception;
 use sR\db\AbstractQuery;
 use sR\db\Builder;
 use sR\db\ConnectFactory;
@@ -45,6 +46,8 @@ class Db
     const DbTypePostgreSql = 'pgsql';
     const DbTypeSQLite = 'sqlite';
 
+    const DbDefaultRegisterKey = 'default';
+
     protected static $resourceDick = [];    // 资源连接字典
     /**
      * 当前 Db 对象
@@ -72,14 +75,39 @@ class Db
     }
 
     /**
+     * @param string|array $option
+     * @param string $type
+     * @return bool|AbstractQuery|null
+     * @throws \Exception
+     */
+    static function registerDefault($option, $type='php'){
+        if(is_array($option)){
+            return self::register(self::DbDefaultRegisterKey, $option);
+        }else if(is_string($option)){
+            return self::registerByFile(self::DbDefaultRegisterKey, $option, $type);
+        }
+        return null;
+    }
+
+    /**
      * 通过文件注册数据库查询实例
      * @param string $name
      * @param string $file
-     * @param string $type
-     * @return AbstractQuery|null
+     * @param null|string $type
+     * @return bool|AbstractQuery|null
+     * @throws \Exception
      */
-    static function registerByFile($name, $file, $type){
+    static function registerByFile($name, $file, $type=null){
         $query = null;
+        // 类型不存在时,根据文件名称自动生成
+        if(empty($type)){
+            $path_parts = pathinfo($file);
+            $path_parts = is_array($path_parts)? $path_parts: [];
+            $type = strtolower($path_parts['extension']) ?? '';
+        }
+        if(empty($type)){
+            throw new \Exception('文件类型为空！');
+        }
         switch ($type){
             case 'ini':
                 $query = ConnectFactory::configUseIni($file, $name);
