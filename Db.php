@@ -64,7 +64,8 @@ class Db
      * 数据库注册
      * @param string $name
      * @param array $options
-     * @return null|AbstractQuery
+     * @return db\Mysql|db\Oci|db\Pgsql|db\SQLite|null
+     * @throws \Exception
      */
     static function register($name, $options){
         $query = ConnectFactory::connect($options);
@@ -77,16 +78,17 @@ class Db
     /**
      * @param string|array $option
      * @param string $type
-     * @return bool|AbstractQuery|null
+     * @param string $key
+     * @return AbstractQuery|null
      * @throws \Exception
      */
-    static function registerDefault($option, $type='php'){
+    static function registerDefault($option, $type='php', $key=''){
         if(is_array($option)){
             return self::register(self::DbDefaultRegisterKey, $option);
         }else if(is_string($option)){
-            return self::registerByFile(self::DbDefaultRegisterKey, $option, $type);
+            return self::registerByFile($option, $key, $type);
         }
-        return null;
+        throw new \Exception('参数无效，无法解析');
     }
 
     /**
@@ -97,7 +99,14 @@ class Db
      * @return bool|AbstractQuery|null
      * @throws \Exception
      */
-    static function registerByFile($name, $file, $type=null){
+    /**
+     * @param string $file 文件名称
+     * @param null $key 配置键名
+     * @param null $type 类型
+     * @return AbstractQuery|null
+     * @throws \Exception
+     */
+    static function registerByFile($file, $key=null, $type=null){
         $query = null;
         // 类型不存在时,根据文件名称自动生成
         if(empty($type)){
@@ -110,19 +119,19 @@ class Db
         }
         switch ($type){
             case 'ini':
-                $query = ConnectFactory::configUseIni($file, $name);
+                $query = ConnectFactory::configUseIni($file, $key);
                 break;
             case 'json':
-                $query = ConnectFactory::configUseJson($file, $name);
+                $query = ConnectFactory::configUseJson($file, $key);
                 break;
             case 'php':
-                $query = ConnectFactory::configUsePhp($file, $name);
+                $query = ConnectFactory::configUsePhp($file, $key);
                 break;
         }
         if(!empty($query)){
             self::$currentDbRs = $query;
-            self::$resourceDick[$name] = $query;
-            self::$currentDbRsKey = $name;
+            self::$resourceDick[$key] = $query;
+            self::$currentDbRsKey = $key;
         }
         return $query;
     }

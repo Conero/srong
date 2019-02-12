@@ -9,7 +9,6 @@
 namespace sR\db;
 
 
-use mysql_xdevapi\Exception;
 use sR\Db;
 
 class ConnectFactory
@@ -17,11 +16,18 @@ class ConnectFactory
     /**
      * 数据库连接器
      * @param array $options
-     * @return AbstractQuery|null
+     * @return Mysql|Oci|Pgsql|SQLite|null
+     * @throws \Exception
      */
     static function connect($options){
+        if(empty($options)){
+            throw new \Exception('数据库配置无效，配置空!');
+        }
         $conn = null;
         $type = $options['type'] ?? null;
+        if(empty($type)){
+            throw new \Exception('数据库配置无效，无 type 配置!');
+        }
         if($type){
             $options['type'] = $type;
             switch (strtolower($type)){
@@ -44,8 +50,8 @@ class ConnectFactory
 
     /**
      * 通过加载ini文件实例化内容
-     * @param string $file
-     * @param string $name
+     * @param string $file 文件名字
+     * @param string $name 键值
      * @return AbstractQuery|null
      * @throws \Exception
      */
@@ -63,8 +69,8 @@ class ConnectFactory
 
     /**
      * 通过加载json文件实例化对象
-     * @param string $file
-     * @param string $name
+     * @param string $file 文件名字
+     * @param string $name 键值
      * @return AbstractQuery|null
      * @throws \Exception
      */
@@ -85,14 +91,14 @@ class ConnectFactory
      */
     private static function getPhpFileData($file){
         if(is_file($file)){
-            return require_once ($file);
+            return require($file);
         }
         return null;
     }
 
     /**
-     * @param string $file
-     * @param string $name
+     * @param string $file 文件名字
+     * @param string $name 键值
      * @return AbstractQuery|null
      * @throws \Exception
      */
