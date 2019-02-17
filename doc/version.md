@@ -17,10 +17,21 @@
 - *Model*
   - (+) *新建数据库模型类，搭建基础模板*    [20181203]
   - (+) *创建基本的数据库操作模板*      [20181203]
+- *Db*
+  - (+) *新增默认的Db注册函数 `registerDefault`，以及设置默认检测常量*
+  - (优化) *`registerByFile`添加错误时抛出异常*
+- *db\AbstractQuery*
+  - (移除) *方法`connect` try-catch 语法使其可以抛出异常*
+- *db\ConnectFactory*
+  - 	(调整) 接口文件读取使之抛出异常
 
 **tests/测试用例**
 
 - `ModelTest` 新建模型测试类
+
+**其他**
+
+- `.gitignore` 文件添加 “private-” 打头的私有文件
 
 
 
